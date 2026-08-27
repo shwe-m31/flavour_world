@@ -3,9 +3,9 @@
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.pantrylabel.PantryLabelApplication" />
     <module name="Pantry_Label_Backend" />
     <envs>
-      <env name="DB_URL" value="jdbc:mysql://localhost:3306/pantry_label_db?useSSL=false&amp;serverTimezone=Asia/Kolkata&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_unicode_ci" />
+      <env name="DB_URL" value="jdbc:mysql://localhost:3306/pantry_label_db?useSSL=false&amp;allowPublicKeyRetrieval=true&amp;serverTimezone=Asia/Kolkata&amp;characterEncoding=utf8&amp;connectionCollation=utf8mb4_unicode_ci" />
       <env name="DB_USERNAME" value="root" />
-      <env name="DB_PASSWORD" value="YOUR_MYSQL_PASSWORD" />
+      <env name="DB_PASSWORD" value="root" />
       <env name="JWT_SECRET" value="pantry-label-local-dev-secret-key-change-in-production-min64chars!!" />
       <env name="JWT_EXPIRATION_MS" value="86400000" />
       <env name="RAZORPAY_KEY_ID" value="rzp_test_YOUR_KEY_ID" />
