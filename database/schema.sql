@@ -14,13 +14,27 @@ CREATE TABLE IF NOT EXISTS categories (
 -- 3. Products table
 CREATE TABLE IF NOT EXISTS products (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    product_code VARCHAR(20),
     name VARCHAR(100) NOT NULL,
+    sub_category VARCHAR(100),
     bilingual_name VARCHAR(100),
-    price DECIMAL(10, 2) NOT NULL,
+    tamil_name VARCHAR(255),
+    hindi_name VARCHAR(255),
+    telugu_name VARCHAR(255),
+    kannada_name VARCHAR(255),
+    malayalam_name VARCHAR(255),
+    bengali_name VARCHAR(255),
+    marathi_name VARCHAR(255),
+    gujarati_name VARCHAR(255),
+    punjabi_name VARCHAR(255),
+    odia_name VARCHAR(255),
+    assamese_name VARCHAR(255),
+    urdu_name VARCHAR(255),
+    price DECIMAL(10, 2) NOT NULL DEFAULT 49.00,
     image_url VARCHAR(255),
-    state_id BIGINT NOT NULL,
+    state_id BIGINT NULL,
     category_id BIGINT NOT NULL,
-    FOREIGN KEY (state_id) REFERENCES states(id) ON DELETE CASCADE,
+    FOREIGN KEY (state_id) REFERENCES states(id) ON DELETE SET NULL,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
 );
 
@@ -103,7 +117,7 @@ CREATE TABLE IF NOT EXISTS orders (
     gst DECIMAL(10, 2) NOT NULL,
     shipping DECIMAL(10, 2) NOT NULL,
     grand_total DECIMAL(10, 2) NOT NULL,
-    status VARCHAR(50) NOT NULL, -- PENDING_PAYMENT, PLACED, PAID, PRINTING, SHIPPED, DELIVERED
+    status VARCHAR(50) NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     font VARCHAR(50),
     shape VARCHAR(50),
@@ -128,7 +142,7 @@ CREATE TABLE IF NOT EXISTS payments (
     razorpay_order_id VARCHAR(100),
     razorpay_payment_id VARCHAR(100),
     razorpay_signature VARCHAR(255),
-    status VARCHAR(50) NOT NULL, -- PENDING, COMPLETED, FAILED
+    status VARCHAR(50) NOT NULL,
     created_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );

@@ -12,8 +12,22 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductDto {
     private Long id;
+    private String productCode;
     private String name;
+    private String subCategory;
     private String bilingualName;
+    private String tamilName;
+    private String hindiName;
+    private String teluguName;
+    private String kannadaName;
+    private String malayalamName;
+    private String bengaliName;
+    private String marathiName;
+    private String gujaratiName;
+    private String punjabiName;
+    private String odiaName;
+    private String assameseName;
+    private String urduName;
     private BigDecimal price;
     private String imageUrl;
     private Long stateId;
