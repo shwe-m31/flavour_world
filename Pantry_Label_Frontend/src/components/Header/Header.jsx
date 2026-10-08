@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Search, User } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import useCart from '../../hooks/useCart';
 import CartBadge from '../CartBadge/CartBadge';
-import logoImg from '../../assets/images/logo.svg';
+import logoImg from '../../assets/images/flavour-world-logo.jpg';
 import './Header.css';
 
 export const Header = ({ searchQuery, setSearchQuery }) => {
@@ -23,13 +24,15 @@ export const Header = ({ searchQuery, setSearchQuery }) => {
     <header className="main-header">
       <div className="header-container">
         <Link to={isAuthenticated ? "/dashboard" : "/login"} className="logo-section">
-          <img src={logoImg} alt="PantryLabel" className="logo-img" />
-          <span className="logo-text">Pantry<span className="logo-highlight">Label</span></span>
+          <img src={logoImg} alt="Flavour World" className="logo-img" style={{ height: '42px', width: '42px', borderRadius: '50%', objectFit: 'cover' }} />
+          <span className="logo-text">Flavour World</span>
         </Link>
 
         {isDashboard && (
           <div className="search-bar-container">
-            <span className="search-icon">🔍</span>
+            <span className="search-icon" style={{ display: 'flex', alignItems: 'center' }}>
+              <Search size={16} />
+            </span>
             <input
               type="text"
               placeholder="Search pantry ingredients..."
@@ -51,7 +54,9 @@ export const Header = ({ searchQuery, setSearchQuery }) => {
               </Link>
               <div className="user-profile-menu">
                 <Link to="/account" className="profile-btn" title="My Account">
-                  <span className="user-avatar">👤</span>
+                  <span className="user-avatar" style={{ display: 'flex', alignItems: 'center' }}>
+                    <User size={16} />
+                  </span>
                   <span className="user-name-label">{user?.name || 'Account'}</span>
                 </Link>
                 <button onClick={handleLogout} className="logout-btn" title="Logout">

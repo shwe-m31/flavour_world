@@ -62,8 +62,8 @@ export const InvoiceCard = ({ order, token }) => {
     <div className="invoice-card-container">
       <div className="invoice-header">
         <div className="company-info">
-          <h4 className="invoice-brand-name">PantryLabel Platform</h4>
-          <p className="company-details">Delhi, India | support@pantrylabel.com</p>
+          <h4 className="invoice-brand-name">Flavour World</h4>
+          <p className="company-details">India | support@flavourworld.in</p>
         </div>
         <div className="invoice-meta">
           <span className="invoice-badge">INVOICE</span>

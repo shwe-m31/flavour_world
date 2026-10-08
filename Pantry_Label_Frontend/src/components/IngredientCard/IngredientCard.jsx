@@ -1,10 +1,11 @@
 import React from 'react';
-import { currencyFormat } from '../../utils/currencyFormat';
 import placeholderImg from '../../assets/images/ingredient-placeholder.svg';
+import { getIngredientImage } from '../../utils/ingredientImageMap.js';
 import './IngredientCard.css';
 
 export const IngredientCard = ({ ingredient, isChecked, onToggle }) => {
-  const { id, name, bilingualName, price, imageUrl } = ingredient;
+  const { id, name, bilingualName, imageUrl } = ingredient;
+  const displayImage = imageUrl || getIngredientImage(ingredient);
 
   const handleCardClick = () => {
     onToggle(id);
@@ -39,29 +40,36 @@ export const IngredientCard = ({ ingredient, isChecked, onToggle }) => {
       </div>
 
       <div className="ingredient-image-container">
-        {imageUrl ? (
+        {displayImage ? (
           <img
-            src={imageUrl}
+            src={displayImage}
             alt={name}
             className="ingredient-img"
             onError={(e) => {
               e.target.onerror = null;
               e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
+              if (e.target.nextSibling) {
+                e.target.nextSibling.style.display = 'flex';
+              }
             }}
           />
         ) : null}
-        <div className="fallback-container" style={{ display: imageUrl ? 'none' : 'flex' }}>
+        <div className="fallback-container" style={{ display: displayImage ? 'none' : 'flex' }}>
           <img src={placeholderImg} alt="" className="ingredient-placeholder-img" />
         </div>
       </div>
 
       <div className="ingredient-info">
         <div className="name-block">
-          <h3 className="ingredient-name">{name}</h3>
-          {bilingualName && <span className="ingredient-bilingual-name">{bilingualName}</span>}
+          {bilingualName ? (
+            <>
+              <h3 className="ingredient-name ingredient-name--translated">{bilingualName}</h3>
+              <span className="ingredient-english-name">{name}</span>
+            </>
+          ) : (
+            <h3 className="ingredient-name">{name}</h3>
+          )}
         </div>
-        <div className="price-tag">{currencyFormat(price || 0)}</div>
       </div>
     </div>
   );

@@ -1,37 +1,52 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 import { profileService } from '../services/profileService';
+import { updateRegisteredUserProfile } from '../services/authService';
 
 export const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
-  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('flavour_world_token') || null);
+  const [user, setUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('flavour_world_user');
+      if (saved) return JSON.parse(saved);
+    } catch {
+      // ignore
+    }
+    return null;
+  });
 
   const login = async (userData, jwtToken) => {
     setToken(jwtToken);
     setUser(userData);
-    
-    // After login, verify the user from the backend
+    localStorage.setItem('flavour_world_token', jwtToken);
+    localStorage.setItem('flavour_world_user', JSON.stringify(userData));
+
     try {
       const response = await profileService.getProfile(jwtToken);
       if (response && response.data) {
-        setUser(response.data);
+        const mergedUser = { ...userData, ...response.data };
+        setUser(mergedUser);
+        localStorage.setItem('flavour_world_user', JSON.stringify(mergedUser));
       }
-    } catch (error) {
-      console.error('Error verifying user session:', error);
-      // If verification fails, we can clear credentials
-      logout();
+    } catch {
+      // Keep in-memory session intact
     }
   };
 
   const logout = () => {
     setToken(null);
     setUser(null);
+    localStorage.removeItem('flavour_world_token');
+    localStorage.removeItem('flavour_world_user');
   };
 
-  const updateProfileStatus = (isCompleted) => {
+  const updateProfileStatus = (isCompleted, additionalData = {}) => {
     if (user) {
-      setUser(prev => ({ ...prev, profileCompleted: isCompleted }));
+      const updated = { ...user, ...additionalData, profileCompleted: isCompleted };
+      setUser(updated);
+      localStorage.setItem('flavour_world_user', JSON.stringify(updated));
+      updateRegisteredUserProfile(updated, { ...additionalData, profileCompleted: isCompleted });
     }
   };
 
@@ -42,8 +57,10 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateProfileStatus,
-    isAuthenticated: !!token
+    isAuthenticated: Boolean(token && user)
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
+export default AuthProvider;

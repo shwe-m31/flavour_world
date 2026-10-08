@@ -137,11 +137,21 @@
   margin: 0;
 }
 
-.ingredient-bilingual-name {
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #6b7280;
+/* When a language is selected, the translated name is shown larger and bold */
+.ingredient-name--translated {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+/* English name shown small beneath the translated name */
+.ingredient-english-name {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #9ca3af;
   margin-top: 0.15rem;
+  letter-spacing: 0.01em;
 }
 
 .price-tag {

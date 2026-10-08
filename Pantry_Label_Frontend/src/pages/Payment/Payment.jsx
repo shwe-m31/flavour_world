@@ -79,7 +79,7 @@ export const Payment = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency || 'INR',
-        name: 'PantryLabel Platform',
+        name: 'Flavour World',
         description: 'Order Custom Sticker Labels',
         order_id: razorpayOrder.id,
         handler: async function (paymentResponse) {

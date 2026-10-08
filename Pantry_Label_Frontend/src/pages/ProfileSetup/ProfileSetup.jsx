@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import profileService from '../../services/profileService';
 import productService from '../../services/productService';
@@ -15,7 +16,7 @@ export const ProfileSetup = () => {
   const [age, setAge] = useState('');
   const [kitchenType, setKitchenType] = useState('');
   const [stateId, setStateId] = useState('');
-  
+
   const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statesLoading, setStatesLoading] = useState(true);
@@ -58,20 +59,23 @@ export const ProfileSetup = () => {
     setLoading(true);
     setError('');
 
+    const selectedStateObj = states.find((s) => String(s.id) === String(stateId));
+
     const profileData = {
-      name,
+      name: name.trim(),
       gender,
       age: parseInt(age, 10),
       kitchenType,
-      stateId: parseInt(stateId, 10)
+      stateId: parseInt(stateId, 10),
+      stateName: selectedStateObj ? selectedStateObj.name : 'Selected Region'
     };
 
     try {
       await profileService.saveProfile(profileData, token);
-      
-      // Update profileCompleted context flag
-      updateProfileStatus(true);
-      
+
+      // Update profileCompleted context flag and sync with registered users
+      updateProfileStatus(true, profileData);
+
       // Redirect to Dashboard
       navigate('/dashboard');
     } catch (err) {
@@ -89,8 +93,20 @@ export const ProfileSetup = () => {
   return (
     <div className="profile-setup-container">
       {loading && <Loader fullPage={true} message="Saving your profile..." />}
-      
+
       <div className="profile-card-layout">
+        <div className="profile-top-nav-row">
+          <button
+            type="button"
+            className="profile-back-nav-btn"
+            onClick={() => navigate(-1)}
+            title="Return to previous page"
+          >
+            <ArrowLeft size={16} />
+            <span>Back</span>
+          </button>
+        </div>
+
         <div className="profile-card-header">
           <h2>Complete Your Profile</h2>
           <p className="subtitle">Tell us about your kitchen to tailor your pantry ingredients.</p>
@@ -185,6 +201,14 @@ export const ProfileSetup = () => {
 
           <button type="submit" className="profile-submit-btn">
             Save & Continue to Dashboard
+          </button>
+
+          <button
+            type="button"
+            className="profile-secondary-back-btn"
+            onClick={() => navigate(-1)}
+          >
+            Back to Previous Page
           </button>
         </form>
       </div>

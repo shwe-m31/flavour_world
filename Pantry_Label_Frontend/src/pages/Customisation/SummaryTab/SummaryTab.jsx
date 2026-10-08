@@ -44,7 +44,8 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
     }
   };
 
-  const totalEstimate = selectedProducts.reduce((sum, p) => sum + (p.price || 0), 0);
+  // Fixed price Rs. 2.00 per label
+  const totalEstimate = selectedProducts.length * 2.00;
   const formattedEstimate = new Intl.NumberFormat('en-IN', {
     style: 'currency',
     currency: 'INR'
@@ -90,7 +91,7 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
                   {p.name} {p.bilingualName && <span className="summary-hi">({p.bilingualName})</span>}
                 </span>
                 <span className="summary-item-price">
-                  {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR' }).format(p.price || 0)}
+                  ₹2.00
                 </span>
               </li>
             ))}
@@ -100,7 +101,7 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
         <hr className="summary-hr" />
 
         <div className="summary-price-dock">
-          <span className="price-label">Estimated Label Cost:</span>
+          <span className="price-label">Estimated Label Cost (Rs. 2 / label):</span>
           <span className="price-value">{formattedEstimate}</span>
         </div>
 
