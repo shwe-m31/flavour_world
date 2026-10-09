@@ -6,7 +6,20 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class DtoMapper {
-    public UserDto user(User value) { return UserDto.builder().id(value.getId()).email(value.getEmail()).name(value.getName()).gender(value.getGender()).age(value.getAge()).kitchenType(value.getKitchenType()).stateId(value.getState() == null ? null : value.getState().getId()).profileCompleted(value.isProfileCompleted()).build(); }
+    public UserDto user(User value) {
+        return UserDto.builder()
+                .id(value.getId())
+                .username(value.getUsername())
+                .email(value.getEmail())
+                .name(value.getName())
+                .gender(value.getGender())
+                .age(value.getAge())
+                .kitchenType(value.getKitchenType())
+                .stateId(value.getState() == null ? null : value.getState().getId())
+                .stateName(value.getState() == null ? null : value.getState().getName())
+                .profileCompleted(value.isProfileCompleted())
+                .build();
+    }
     public StateDto state(State value) { return StateDto.builder().id(value.getId()).name(value.getName()).build(); }
     public CategoryDto category(Category value) { return CategoryDto.builder().id(value.getId()).name(value.getName()).description(value.getDescription()).build(); }
     public ProductDto product(Product value) {

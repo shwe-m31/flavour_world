@@ -10,33 +10,21 @@ const getHeaders = (token) => ({
 
 export const paymentService = {
   createRazorpayOrder: async (orderId, token) => {
-    try {
-      const res = await axios.post(`${API_BASE}/api/payments/razorpay/create`, { orderId }, { ...getHeaders(token), timeout: 1500 });
-      return res;
-    } catch {
-      return {
-        data: {
-          id: `order_rzp_${Date.now()}`,
-          amount: 5664, // in paise
-          currency: 'INR'
-        }
-      };
-    }
+    const res = await axios.post(
+      `${API_BASE}/api/payments/razorpay/create`,
+      { orderId: Number(orderId) },
+      { ...getHeaders(token), timeout: 15000 }
+    );
+    return res;
   },
 
   verifyPayment: async (paymentDetails, token) => {
-    try {
-      const res = await axios.post(`${API_BASE}/api/payments/razorpay/verify`, paymentDetails, { ...getHeaders(token), timeout: 1500 });
-      return res;
-    } catch {
-      return {
-        status: 200,
-        data: {
-          success: true,
-          message: 'Payment verified successfully'
-        }
-      };
-    }
+    const res = await axios.post(
+      `${API_BASE}/api/payments/razorpay/verify`,
+      paymentDetails,
+      { ...getHeaders(token), timeout: 15000 }
+    );
+    return res;
   }
 };
 

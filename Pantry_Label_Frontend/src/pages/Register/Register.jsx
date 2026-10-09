@@ -109,7 +109,7 @@ export const Register = () => {
       navigate('/profile-setup');
     } catch (err) {
       console.error('Registration error:', err);
-      setError(err.message || err.response?.data?.message || 'Registration failed. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -134,7 +134,7 @@ export const Register = () => {
       setMessage('A verification code has been dispatched to your email.');
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Failed to send OTP. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -162,7 +162,7 @@ export const Register = () => {
       navigate('/profile-setup');
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Invalid or expired OTP. Please verify and retry.');
+      setError(err.response?.data?.message || err.message || 'Invalid or expired OTP. Please verify and retry.');
     } finally {
       setLoading(false);
     }
@@ -182,7 +182,7 @@ export const Register = () => {
       setMessage('A fresh verification code has been sent.');
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Could not resend code. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Could not resend code. Please try again.');
     } finally {
       setLoading(false);
     }

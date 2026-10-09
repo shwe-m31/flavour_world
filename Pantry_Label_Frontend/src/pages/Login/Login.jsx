@@ -80,7 +80,7 @@ export const Login = () => {
       setMessage('OTP has been successfully sent to your email.');
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Failed to send OTP. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to send OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -111,7 +111,7 @@ export const Login = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Invalid or expired OTP. Please check and try again.');
+      setError(err.response?.data?.message || err.message || 'Invalid or expired OTP. Please check and try again.');
     } finally {
       setLoading(false);
     }
@@ -130,7 +130,7 @@ export const Login = () => {
       setMessage('A fresh verification code has been sent to your email.');
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Failed to resend OTP. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to resend OTP. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ export const Login = () => {
       }
     } catch (err) {
       console.error(err);
-      setError(err.message || err.response?.data?.message || 'Invalid username or password.');
+      setError(err.response?.data?.message || err.message || 'Invalid username or password.');
     } finally {
       setLoading(false);
     }

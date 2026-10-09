@@ -41,6 +41,8 @@ CREATE TABLE IF NOT EXISTS products (
 -- 4. Users table
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE,
+    password VARCHAR(255),
     email VARCHAR(100) NOT NULL UNIQUE,
     name VARCHAR(100),
     gender VARCHAR(20),

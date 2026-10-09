@@ -1,6 +1,5 @@
 import React, { createContext, useState } from 'react';
 import { profileService } from '../services/profileService';
-import { updateRegisteredUserProfile } from '../services/authService';
 
 export const AuthContext = createContext(null);
 
@@ -30,7 +29,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('flavour_world_user', JSON.stringify(mergedUser));
       }
     } catch {
-      // Keep in-memory session intact
+      // Keep existing session intact if profile fetch fails
     }
   };
 
@@ -46,7 +45,6 @@ export const AuthProvider = ({ children }) => {
       const updated = { ...user, ...additionalData, profileCompleted: isCompleted };
       setUser(updated);
       localStorage.setItem('flavour_world_user', JSON.stringify(updated));
-      updateRegisteredUserProfile(updated, { ...additionalData, profileCompleted: isCompleted });
     }
   };
 

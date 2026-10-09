@@ -65,23 +65,50 @@ export const Payment = () => {
   }, [orderId, token, navigate]);
 
   const handleRazorpayPayment = async () => {
-    if (!order || !scriptLoaded) return;
+    if (!order) {
+      setError('Order details are not loaded.');
+      return;
+    }
+    if (!scriptLoaded || !window.Razorpay) {
+      setError('Payment gateway SDK is loading. Please wait or refresh the page.');
+      return;
+    }
 
     setPaying(true);
     setError('');
 
     try {
-      // Create backend Razorpay order
+      // 1. Create backend Razorpay order
       const response = await paymentService.createRazorpayOrder(orderId, token);
-      const razorpayOrder = response.data; // should contain { id, amount, currency, ... }
+      const razorpayOrder = response.data; // contains { id, keyId, razorpayOrderId, amount, currency }
+
+      // 2. Validate all required Razorpay fields before opening checkout
+      const testKeyId = razorpayOrder.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
+
+      if (!testKeyId || testKeyId === 'rzp_test_placeholder' || testKeyId.trim() === '') {
+        throw new Error('Razorpay TEST Key ID is not configured. Please set a valid Razorpay test key.');
+      }
+
+      const rzpOrderId = razorpayOrder.id || razorpayOrder.razorpayOrderId;
+      if (!rzpOrderId) {
+        throw new Error('Razorpay order ID was not received from the server.');
+      }
+
+      if (!razorpayOrder.amount) {
+        throw new Error('Order amount is missing.');
+      }
+
+      if (!razorpayOrder.currency) {
+        throw new Error('Order currency is missing.');
+      }
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+        key: testKeyId,
         amount: razorpayOrder.amount,
         currency: razorpayOrder.currency || 'INR',
         name: 'Flavour World',
         description: 'Order Custom Sticker Labels',
-        order_id: razorpayOrder.id,
+        order_id: rzpOrderId,
         handler: async function (paymentResponse) {
           // Verify payment on successful authorization
           setVerifying(true);
@@ -91,16 +118,16 @@ export const Payment = () => {
               razorpayPaymentId: paymentResponse.razorpay_payment_id,
               razorpaySignature: paymentResponse.razorpay_signature
             };
-            
+
             const verifyRes = await paymentService.verifyPayment(verificationPayload, token);
-            if (verifyRes.status === 200 || verifyRes.data.success) {
+            if (verifyRes.status === 200 || verifyRes.data?.success) {
               navigate(`/order-success?orderId=${orderId}`);
             } else {
               setError('Payment verification failed on the server.');
             }
           } catch (verifyErr) {
-            console.error(verifyErr);
-            setError('Payment verification error occurred. Contact support if debited.');
+            console.error('Payment verification failed:', verifyErr);
+            setError(verifyErr.response?.data?.message || verifyErr.message || 'Payment verification error occurred.');
           } finally {
             setVerifying(false);
           }
@@ -122,10 +149,14 @@ export const Payment = () => {
       };
 
       const rzpInstance = new window.Razorpay(options);
+      rzpInstance.on('payment.failed', function (resp) {
+        setPaying(false);
+        setError(resp.error?.description || 'Payment failed. Please retry.');
+      });
       rzpInstance.open();
     } catch (err) {
       console.error('Razorpay initialization failed:', err);
-      setError(err.response?.data?.message || 'Failed to initialize payment gateway.');
+      setError(err.response?.data?.message || err.message || 'Failed to initialize payment gateway.');
       setPaying(false);
     }
   };

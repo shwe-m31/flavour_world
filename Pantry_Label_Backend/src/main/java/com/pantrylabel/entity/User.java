@@ -18,6 +18,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
+    private String username;
+
+    private String password;
+
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -35,6 +40,7 @@ public class User {
     private State state;
 
     @Column(name = "profile_completed", nullable = false)
+    @Builder.Default
     private boolean profileCompleted = false;
 
     private String otp;

@@ -25,7 +25,7 @@ const DEFAULT_ADDRESSES = [
 export const addressService = {
   getAddresses: async (token) => {
     try {
-      const res = await axios.get(`${API_BASE}/api/addresses`, { ...getHeaders(token), timeout: 1500 });
+      const res = await axios.get(`${API_BASE}/api/addresses`, { ...getHeaders(token), timeout: 10000 });
       if (res.data && res.data.length > 0) return res;
     } catch {
       // Fallback
@@ -35,7 +35,7 @@ export const addressService = {
 
   saveAddress: async (addressData, token) => {
     try {
-      const res = await axios.post(`${API_BASE}/api/addresses`, addressData, { ...getHeaders(token), timeout: 1500 });
+      const res = await axios.post(`${API_BASE}/api/addresses`, addressData, { ...getHeaders(token), timeout: 10000 });
       return res;
     } catch {
       const newAddr = { ...addressData, id: Date.now() };
