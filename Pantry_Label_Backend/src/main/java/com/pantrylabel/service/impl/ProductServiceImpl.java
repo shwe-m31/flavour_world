@@ -74,12 +74,22 @@ public class ProductServiceImpl implements ProductService {
                     case "urdu" -> p.getUrduName();
                     default -> p.getBilingualName();
                 };
-                if (translatedName != null && !translatedName.isBlank()) {
-                    p.setBilingualName(translatedName);
-                }
+                p.setBilingualName(sanitizeTranslation(translatedName, p.getName()));
             });
         }
 
         return result;
+    }
+
+    private String sanitizeTranslation(String text, String fallback) {
+        if (text == null) {
+            return fallback;
+        }
+        String cleaned = text.replaceAll("\\(cid:\\d+\\)", "").replaceAll("[?]{2,}", "").trim();
+        cleaned = cleaned.replaceAll("^[()?,.-]+|[()?,.-]+$", "").trim();
+        if (cleaned.isBlank() || cleaned.length() < 2 || cleaned.chars().allMatch(c -> c == '?' || c == ' ' || c == '-' || c == '(' || c == ')')) {
+            return fallback;
+        }
+        return cleaned;
     }
 }

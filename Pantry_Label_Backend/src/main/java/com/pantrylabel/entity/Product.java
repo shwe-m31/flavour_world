@@ -67,7 +67,8 @@ public class Product {
     private String urduName;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    @Builder.Default
+    private BigDecimal price = new BigDecimal("2.00");
 
     @Column(name = "image_url")
     private String imageUrl;

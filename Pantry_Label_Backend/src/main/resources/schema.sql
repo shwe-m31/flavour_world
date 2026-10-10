@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS products (
     odia_name VARCHAR(255),
     assamese_name VARCHAR(255),
     urdu_name VARCHAR(255),
-    price DECIMAL(10, 2) NOT NULL DEFAULT 49.00,
+    price DECIMAL(10, 2) NOT NULL DEFAULT 2.00,
     image_url VARCHAR(255),
     state_id BIGINT NULL,
     category_id BIGINT NOT NULL,

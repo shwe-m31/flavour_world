@@ -211,12 +211,6 @@ export const Landing = () => {
           </nav>
 
           <div className="fw-header-actions">
-            <Link to="/login" className="fw-btn-secondary">
-              Sign In
-            </Link>
-            <Link to="/register" className="fw-btn-primary">
-              Create Account
-            </Link>
             <button
               type="button"
               className="fw-mobile-menu-btn"

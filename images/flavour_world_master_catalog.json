@@ -575,7 +575,7 @@
     "slug": "golden-raisins",
     "filename": "golden-raisins.jpg",
     "batch": 3,
-    "status": "READY_IN_QUEUE",
+    "status": "COMPLETED",
     "description": "plump translucent golden-amber dried kishmish raisins with wrinkled glossy skin",
     "prompt": "A professional catalog food product photograph in the exact same visual style, camera angle, lighting, and composition as the reference image. In the center of the frame is the same round white ceramic bowl resting on a clean plain seamless off-white background with a soft subtle realistic contact shadow underneath. Inside the bowl is plump translucent golden-amber dried kishmish raisins with wrinkled glossy skin. Studio diffused lighting, sharp focus, 1:1 square aspect ratio, 50mm lens perspective, high angle 50 degree view. No spoons, no utensils, no hands, no text, no labels, no branding, no other objects."
   },
@@ -585,7 +585,7 @@
     "slug": "black-raisins",
     "filename": "black-raisins.jpg",
     "batch": 3,
-    "status": "READY_IN_QUEUE",
+    "status": "COMPLETED",
     "description": "deep dark purple-black wrinkled whole sun-dried raisins with rich matte surface",
     "prompt": "A professional catalog food product photograph in the exact same visual style, camera angle, lighting, and composition as the reference image. In the center of the frame is the same round white ceramic bowl resting on a clean plain seamless off-white background with a soft subtle realistic contact shadow underneath. Inside the bowl is deep dark purple-black wrinkled whole sun-dried raisins with rich matte surface. Studio diffused lighting, sharp focus, 1:1 square aspect ratio, 50mm lens perspective, high angle 50 degree view. No spoons, no utensils, no hands, no text, no labels, no branding, no other objects."
   },
@@ -595,7 +595,7 @@
     "slug": "seedless-dates",
     "filename": "seedless-dates.jpg",
     "batch": 3,
-    "status": "READY_IN_QUEUE",
+    "status": "COMPLETED",
     "description": "rich dark mahogany-brown pitted seedless dried dates with glossy wrinkled skin",
     "prompt": "A professional catalog food product photograph in the exact same visual style, camera angle, lighting, and composition as the reference image. In the center of the frame is the same round white ceramic bowl resting on a clean plain seamless off-white background with a soft subtle realistic contact shadow underneath. Inside the bowl is rich dark mahogany-brown pitted seedless dried dates with glossy wrinkled skin. Studio diffused lighting, sharp focus, 1:1 square aspect ratio, 50mm lens perspective, high angle 50 degree view. No spoons, no utensils, no hands, no text, no labels, no branding, no other objects."
   },
@@ -605,7 +605,7 @@
     "slug": "premium-dates",
     "filename": "premium-dates.jpg",
     "batch": 4,
-    "status": "READY_IN_QUEUE",
+    "status": "COMPLETED",
     "description": "large plump succulent Medjool dates with glossy dark amber-brown textured skin and soft caramelized flesh",
     "prompt": "A professional catalog food product photograph in the exact same visual style, camera angle, lighting, and composition as the reference image. In the center of the frame is the same round white ceramic bowl resting on a clean plain seamless off-white background with a soft subtle realistic contact shadow underneath. Inside the bowl is large plump succulent Medjool dates with glossy dark amber-brown textured skin and soft caramelized flesh. Studio diffused lighting, sharp focus, 1:1 square aspect ratio, 50mm lens perspective, high angle 50 degree view. No spoons, no utensils, no hands, no text, no labels, no branding, no other objects."
   },
@@ -615,7 +615,7 @@
     "slug": "dried-fig",
     "filename": "dried-fig.jpg",
     "batch": 4,
-    "status": "READY_IN_QUEUE",
+    "status": "COMPLETED",
     "description": "round flattened chewy golden-brown sun-dried figs (anjeer) with tiny seeds visible under skin",
     "prompt": "A professional catalog food product photograph in the exact same visual style, camera angle, lighting, and composition as the reference image. In the center of the frame is the same round white ceramic bowl resting on a clean plain seamless off-white background with a soft subtle realistic contact shadow underneath. Inside the bowl is round flattened chewy golden-brown sun-dried figs (anjeer) with tiny seeds visible under skin. Studio diffused lighting, sharp focus, 1:1 square aspect ratio, 50mm lens perspective, high angle 50 degree view. No spoons, no utensils, no hands, no text, no labels, no branding, no other objects."
   },

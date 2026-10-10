@@ -109,8 +109,8 @@ export const AddressPage = ({ token, onSelectAddress, selectedAddressId }) => {
               <AddressCard
                 key={addr.id}
                 address={addr}
-                isSelected={selectedAddressId === addr.id}
-                onSelect={onSelectAddress}
+                isSelected={Boolean(selectedAddressId !== null && selectedAddressId !== undefined && String(selectedAddressId) === String(addr.id))}
+                onSelect={(id) => onSelectAddress && onSelectAddress(id)}
               />
             ))}
           </div>

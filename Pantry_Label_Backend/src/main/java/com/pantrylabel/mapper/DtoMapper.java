@@ -22,26 +22,39 @@ public class DtoMapper {
     }
     public StateDto state(State value) { return StateDto.builder().id(value.getId()).name(value.getName()).build(); }
     public CategoryDto category(Category value) { return CategoryDto.builder().id(value.getId()).name(value.getName()).description(value.getDescription()).build(); }
+    private String cleanText(String text, String fallback) {
+        if (text == null) return fallback;
+        String cleaned = text.replaceAll("\\(cid:\\d+\\)", "").replaceAll("[?]{2,}", "").trim();
+        cleaned = cleaned.replaceAll("^[()?,.-]+|[()?,.-]+$", "").trim();
+        if (cleaned.isBlank() || cleaned.length() < 2 || cleaned.chars().allMatch(c -> c == '?' || c == ' ' || c == '-' || c == '(' || c == ')')) {
+            return fallback;
+        }
+        return cleaned;
+    }
+
     public ProductDto product(Product value) {
+        String cleanEnName = cleanText(value.getName(), "Ingredient");
+        String cleanTamil = cleanText(value.getTamilName(), cleanEnName);
+        String cleanBilingual = cleanText(value.getBilingualName(), cleanTamil);
         return ProductDto.builder()
                 .id(value.getId())
                 .productCode(value.getProductCode())
-                .name(value.getName())
+                .name(cleanEnName)
                 .subCategory(value.getSubCategory())
-                .bilingualName(value.getBilingualName())
-                .tamilName(value.getTamilName())
-                .hindiName(value.getHindiName())
-                .teluguName(value.getTeluguName())
-                .kannadaName(value.getKannadaName())
-                .malayalamName(value.getMalayalamName())
-                .bengaliName(value.getBengaliName())
-                .marathiName(value.getMarathiName())
-                .gujaratiName(value.getGujaratiName())
-                .punjabiName(value.getPunjabiName())
-                .odiaName(value.getOdiaName())
-                .assameseName(value.getAssameseName())
-                .urduName(value.getUrduName())
-                .price(value.getPrice())
+                .bilingualName(cleanBilingual)
+                .tamilName(cleanTamil)
+                .hindiName(cleanText(value.getHindiName(), cleanEnName))
+                .teluguName(cleanText(value.getTeluguName(), cleanEnName))
+                .kannadaName(cleanText(value.getKannadaName(), cleanEnName))
+                .malayalamName(cleanText(value.getMalayalamName(), cleanEnName))
+                .bengaliName(cleanText(value.getBengaliName(), cleanEnName))
+                .marathiName(cleanText(value.getMarathiName(), cleanEnName))
+                .gujaratiName(cleanText(value.getGujaratiName(), cleanEnName))
+                .punjabiName(cleanText(value.getPunjabiName(), cleanEnName))
+                .odiaName(cleanText(value.getOdiaName(), cleanEnName))
+                .assameseName(cleanText(value.getAssameseName(), cleanEnName))
+                .urduName(cleanText(value.getUrduName(), cleanEnName))
+                .price(value.getPrice() != null ? value.getPrice() : new java.math.BigDecimal("2.00"))
                 .imageUrl(value.getImageUrl())
                 .stateId(value.getState() == null ? null : value.getState().getId())
                 .categoryId(value.getCategory() == null ? null : value.getCategory().getId())

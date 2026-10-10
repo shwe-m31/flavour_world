@@ -31,6 +31,15 @@ export const AddressCard = ({ address, isSelected, onSelect }) => {
       tabIndex={0}
     >
       <div className="address-card-selection">
+        <input
+          type="radio"
+          name="checkoutDeliveryAddress"
+          checked={Boolean(isSelected)}
+          onChange={() => onSelect && onSelect(id)}
+          className="address-radio-input"
+          style={{ position: 'absolute', opacity: 0, pointerEvents: 'none' }}
+          aria-label={`Select delivery address for ${name}`}
+        />
         <span className="address-radio-circle"></span>
       </div>
 
