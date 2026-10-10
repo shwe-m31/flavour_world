@@ -31,12 +31,17 @@ export const Dashboard = () => {
   const navigate = useNavigate();
 
   // Customisation Context
-  const { selectedProductIds, toggleProductSelection, clearSelections } = React.useContext(CustomisationContext);
+  const {
+    selectedProductIds,
+    toggleProductSelection,
+    clearSelections,
+    selectedLanguage = 'tamil',
+    setSelectedLanguage
+  } = React.useContext(CustomisationContext);
 
   // Filter States
   const [states, setStates] = useState([]);
   const [selectedStateId, setSelectedStateId] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('tamil');
   const [categories, setCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   

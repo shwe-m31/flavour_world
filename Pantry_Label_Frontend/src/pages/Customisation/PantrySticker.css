@@ -1,0 +1,302 @@
+/* ============================================================
+   FLAVOUR WORLD — PREMIUM LUXURY PANTRY STICKER DESIGN SYSTEM
+   Authentic, professionally printed physical pantry sticker styles
+   ============================================================ */
+
+.pantry-sticker-wrapper {
+  box-sizing: border-box;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  position: relative;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Sticker Shapes & Real Proportions */
+.pantry-sticker-wrapper.shape-square {
+  width: 320px;
+  height: 320px;
+  max-width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.pantry-sticker-wrapper.shape-rectangle {
+  width: 380px;
+  height: 270px;
+  max-width: 100%;
+  aspect-ratio: 1.4 / 1;
+}
+
+.pantry-sticker-wrapper.shape-oval {
+  width: 380px;
+  height: 270px;
+  max-width: 100%;
+  aspect-ratio: 1.4 / 1;
+}
+.pantry-sticker-wrapper.shape-oval .pantry-sticker-surface {
+  border-radius: 50% !important;
+}
+
+/* Physical Die-cut Sticker Surface */
+.pantry-sticker-surface {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--sticker-bg);
+  border-radius: var(--sticker-radius, 14px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 12px 28px -6px rgba(0, 0, 0, 0.35),
+    0 3px 8px rgba(0, 0, 0, 0.15);
+  font-family: var(--sticker-font);
+}
+
+/* Light paper themes get crisp paper shadow */
+.pantry-sticker-wrapper.theme-ivory-bronze .pantry-sticker-surface,
+.pantry-sticker-wrapper.theme-sage-botanical .pantry-sticker-surface {
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.08),
+    0 10px 24px -4px rgba(36, 23, 16, 0.16),
+    0 3px 8px rgba(36, 23, 16, 0.08);
+}
+
+/* Subtle Physical Paper Sheen Overlay */
+.pantry-sticker-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 50% 12%,
+    rgba(255, 255, 255, 0.12) 0%,
+    rgba(255, 255, 255, 0) 65%
+  );
+  z-index: 1;
+}
+
+/* Outer Inset Frame */
+.pantry-sticker-outer-frame {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  border-radius: calc(var(--sticker-radius, 14px) - 4px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+  padding: 4px;
+}
+
+/* Inner Decorative Border Container */
+.pantry-sticker-inner-border {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 20px;
+  border-radius: calc(var(--sticker-radius, 14px) - 8px);
+}
+
+/* ============================================================
+   BORDER STYLES
+   ============================================================ */
+
+/* 1. Fine Single Border */
+.pantry-sticker-wrapper.border-single .pantry-sticker-inner-border {
+  border: 1.5px solid var(--sticker-border);
+}
+
+/* 2. Elegant Double Border */
+.pantry-sticker-wrapper.border-double .pantry-sticker-inner-border {
+  border: 3.5px double var(--sticker-border);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+/* 3. Thin Inset Inner Border */
+.pantry-sticker-wrapper.border-inset .pantry-sticker-outer-frame {
+  border: 1px solid var(--sticker-border);
+}
+.pantry-sticker-wrapper.border-inset .pantry-sticker-inner-border {
+  border: 1px solid var(--sticker-border);
+  margin: 3px;
+}
+
+/* 4. Subtle Stitched / Dashed Border */
+.pantry-sticker-wrapper.border-stitched .pantry-sticker-inner-border {
+  border: 1.5px dashed var(--sticker-border);
+}
+
+/* 5. Regal Decorative Border */
+.pantry-sticker-wrapper.border-decorative .pantry-sticker-outer-frame {
+  border: 1px solid var(--sticker-border);
+}
+.pantry-sticker-wrapper.border-decorative .pantry-sticker-inner-border {
+  border: 1.5px solid var(--sticker-border);
+  margin: 3px;
+}
+
+/* 6. Minimal Contemporary Border */
+.pantry-sticker-wrapper.border-minimal .pantry-sticker-inner-border {
+  border: 1px solid var(--sticker-border);
+  border-color: rgba(var(--sticker-border), 0.7);
+}
+
+/* Ornate Corner Florets for Decorative Border */
+.sticker-corner {
+  position: absolute;
+  color: var(--sticker-accent);
+  font-size: 13px;
+  line-height: 1;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.95;
+}
+.corner-tl { top: -2px; left: -2px; transform: translate(-30%, -30%); }
+.corner-tr { top: -2px; right: -2px; transform: translate(30%, -30%); }
+.corner-bl { bottom: -2px; left: -2px; transform: translate(-30%, 30%); }
+.corner-br { bottom: -2px; right: -2px; transform: translate(30%, 30%); }
+
+/* Corner Pips for Minimal Border */
+.sticker-pip {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background-color: var(--sticker-border);
+  pointer-events: none;
+}
+.pip-tl { top: -3px; left: -3px; }
+.pip-tr { top: -3px; right: -3px; }
+.pip-bl { bottom: -3px; left: -3px; }
+.pip-br { bottom: -3px; right: -3px; }
+
+/* ============================================================
+   STICKER CONTENT FLOW
+   ============================================================ */
+
+.pantry-sticker-content-flow {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+
+/* Top Botanical Line-Art Illustration */
+.pantry-sticker-illustration-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.illustration-holder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--sticker-accent);
+}
+
+.flourish-line {
+  flex: 1;
+  max-width: 48px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--sticker-accent) 50%,
+    transparent 100%
+  );
+  opacity: 0.6;
+}
+
+/* Heading & Name Block */
+.pantry-sticker-heading-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 6px;
+}
+
+/* Prominent Regional-Language Ingredient Name */
+.pantry-sticker-regional-title {
+  margin: 0;
+  padding: 0 4px;
+  font-weight: 700;
+  color: var(--sticker-primary);
+  line-height: 1.22;
+  letter-spacing: -0.01em;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  font-family: inherit;
+}
+
+/* Divider Flourish */
+.pantry-sticker-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 70%;
+  max-width: 140px;
+  margin: 2px 0;
+}
+
+.divider-hairline {
+  flex: 1;
+  height: 1px;
+  background-color: var(--sticker-border);
+  opacity: 0.6;
+}
+
+.divider-floret {
+  color: var(--sticker-accent);
+  font-size: 9px;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+/* Smaller Subordinate English Name */
+.pantry-sticker-english-title {
+  color: var(--sticker-secondary);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  text-align: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  opacity: 0.95;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .pantry-sticker-wrapper.shape-square {
+    width: 270px;
+    height: 270px;
+  }
+  .pantry-sticker-wrapper.shape-rectangle {
+    width: 300px;
+    height: 215px;
+  }
+  .pantry-sticker-regional-title {
+    font-size: 1.25rem !important;
+  }
+}

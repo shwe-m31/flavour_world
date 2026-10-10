@@ -1,13 +1,47 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import { selectionService } from '../services/selectionService';
+import { getThemeById } from '../pages/Customisation/labelCustomisationData';
 
 export const CustomisationContext = createContext(null);
 
 export const CustomisationProvider = ({ children }) => {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
-  const [selectedFont, setSelectedFont] = useState('Poppins');
-  const [selectedShape, setSelectedShape] = useState('Oval'); // Supported shapes: Oval, Rounded, etc.
-  const [selectedBackground, setSelectedBackground] = useState('Minimal'); // Supported backgrounds
+  
+  // Luxury Theme Palette
+  const [selectedTheme, setSelectedTheme] = useState('navy-gold');
+  // Backward compatibility alias for selectedBackground
+  const [selectedBackground, setSelectedBackground] = useState('Royal Navy & Gold');
+
+  // Label Shape & Corner Treatment
+  const [selectedShape, setSelectedShape] = useState('square'); // 'square', 'rectangle', 'oval'
+  const [selectedCorner, setSelectedCorner] = useState('rounded'); // 'rounded', 'sharp'
+
+  // Decorative Border Style
+  const [selectedBorderStyle, setSelectedBorderStyle] = useState('decorative'); // 'decorative', 'double', 'inset', 'single', 'stitched', 'minimal'
+
+  // Typography Font
+  const [selectedFont, setSelectedFont] = useState('Playfair Display');
+
+  // Botanical / Pantry Line-Art Illustration Visibility
+  const [showIllustration, setShowIllustration] = useState(true);
+
+  // Active Regional Language
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return localStorage.getItem('fw_selected_lang') || 'tamil';
+  });
+
+  // Keep selectedBackground synced with selectedTheme
+  useEffect(() => {
+    const t = getThemeById(selectedTheme);
+    setSelectedBackground(t?.name || selectedTheme);
+  }, [selectedTheme]);
+
+  // Persist language choice
+  useEffect(() => {
+    if (selectedLanguage) {
+      localStorage.setItem('fw_selected_lang', selectedLanguage);
+    }
+  }, [selectedLanguage]);
 
   const toggleProductSelection = (productId) => {
     setSelectedProductIds(prev => {
@@ -23,31 +57,51 @@ export const CustomisationProvider = ({ children }) => {
     if (selectedProductIds.length === 0) {
       throw new Error('No ingredients selected');
     }
-    // Call selectionService with selections
+    const themeObj = getThemeById(selectedTheme);
+    const shapeLabel = selectedShape === 'square'
+      ? `Square (${selectedCorner})`
+      : selectedShape === 'rectangle'
+        ? `Rectangle (${selectedCorner})`
+        : selectedShape;
+
+    // Send selection to backend (compatible with SelectionRequest)
     const response = await selectionService.postSelections({
       productIds: selectedProductIds,
       font: selectedFont,
-      shape: selectedShape,
-      background: selectedBackground
+      shape: shapeLabel,
+      background: themeObj?.name || selectedTheme
     }, token);
     return response.data;
   };
 
   const clearSelections = () => {
     setSelectedProductIds([]);
-    setSelectedFont('Poppins');
-    setSelectedShape('Oval');
-    setSelectedBackground('Minimal');
+    setSelectedTheme('navy-gold');
+    setSelectedShape('square');
+    setSelectedCorner('rounded');
+    setSelectedBorderStyle('decorative');
+    setSelectedFont('Playfair Display');
+    setShowIllustration(true);
   };
 
   const value = {
     selectedProductIds,
     setSelectedProductIds,
     toggleProductSelection,
-    selectedFont,
-    setSelectedFont,
+    selectedTheme,
+    setSelectedTheme,
     selectedShape,
     setSelectedShape,
+    selectedCorner,
+    setSelectedCorner,
+    selectedBorderStyle,
+    setSelectedBorderStyle,
+    selectedFont,
+    setSelectedFont,
+    showIllustration,
+    setShowIllustration,
+    selectedLanguage,
+    setSelectedLanguage,
     selectedBackground,
     setSelectedBackground,
     proceedWithSelection,
@@ -60,3 +114,5 @@ export const CustomisationProvider = ({ children }) => {
     </CustomisationContext.Provider>
   );
 };
+
+export default CustomisationContext;

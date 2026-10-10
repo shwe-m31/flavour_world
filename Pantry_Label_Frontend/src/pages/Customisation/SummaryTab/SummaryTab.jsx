@@ -3,17 +3,39 @@ import { useNavigate } from 'react-router-dom';
 import { CustomisationContext } from '../../../context/CustomisationContext';
 import { CartContext } from '../../../context/CartContext';
 import useAuth from '../../../hooks/useAuth';
+import {
+  getThemeById,
+  getShapeById,
+  getCornerById,
+  getBorderById
+} from '../labelCustomisationData';
 import Loader from '../../../components/Loader/Loader';
 import './SummaryTab.css';
 
 export const SummaryTab = ({ selectedProducts = [] }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
-  const { selectedFont, selectedShape, selectedBackground, proceedWithSelection, clearSelections } = useContext(CustomisationContext);
+  const {
+    selectedTheme,
+    selectedShape,
+    selectedCorner,
+    selectedBorderStyle,
+    selectedFont,
+    showIllustration,
+    selectedLanguage,
+    selectedBackground,
+    proceedWithSelection,
+    clearSelections
+  } = useContext(CustomisationContext);
   const { addToCart } = useContext(CartContext);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const themeObj = getThemeById(selectedTheme);
+  const shapeObj = getShapeById(selectedShape);
+  const cornerObj = getCornerById(selectedCorner);
+  const borderObj = getBorderById(selectedBorderStyle);
 
   const handleAction = async (actionType) => {
     setLoading(true);
@@ -63,16 +85,28 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
 
         <div className="summary-specs-list">
           <div className="spec-row">
-            <span>Font Style:</span>
+            <span>Sticker Palette:</span>
+            <strong>{themeObj?.name || selectedBackground}</strong>
+          </div>
+          <div className="spec-row">
+            <span>Shape & Finish:</span>
+            <strong>{shapeObj?.name || selectedShape} ({cornerObj?.name || selectedCorner})</strong>
+          </div>
+          <div className="spec-row">
+            <span>Border Style:</span>
+            <strong>{borderObj?.name || selectedBorderStyle}</strong>
+          </div>
+          <div className="spec-row">
+            <span>Typography:</span>
             <strong>{selectedFont}</strong>
           </div>
           <div className="spec-row">
-            <span>Label Shape:</span>
-            <strong>{selectedShape}</strong>
+            <span>Primary Script:</span>
+            <strong style={{ textTransform: 'capitalize' }}>{selectedLanguage || 'Tamil'}</strong>
           </div>
           <div className="spec-row">
-            <span>Theme Background:</span>
-            <strong>{selectedBackground}</strong>
+            <span>Ingredient Artwork:</span>
+            <strong>{showIllustration ? 'Botanical Line Art' : 'Text-Only'}</strong>
           </div>
           <div className="spec-row">
             <span>Total Stickers:</span>
@@ -85,16 +119,21 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
         <div className="selected-labels-review-list">
           <h4>Items to Customize:</h4>
           <ul>
-            {selectedProducts.map(p => (
-              <li key={p.id} className="summary-product-item">
-                <span className="summary-item-name">
-                  {p.name} {p.bilingualName && <span className="summary-hi">({p.bilingualName})</span>}
-                </span>
-                <span className="summary-item-price">
-                  ₹2.00
-                </span>
-              </li>
-            ))}
+            {selectedProducts.map(p => {
+              const langKey = (selectedLanguage || 'tamil').toLowerCase().trim();
+              const regText = p[langKey] || p[`${langKey}Name`] || p.bilingualName;
+              const cleanReg = regText ? String(regText).replace(/\(cid:\d+\)/g, '').trim() : '';
+              return (
+                <li key={p.id} className="summary-product-item">
+                  <span className="summary-item-name">
+                    {p.name} {cleanReg && cleanReg !== p.name && <span className="summary-hi">({cleanReg})</span>}
+                  </span>
+                  <span className="summary-item-price">
+                    ₹2.00
+                  </span>
+                </li>
+              );
+            })}
           </ul>
         </div>
 

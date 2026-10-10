@@ -14,7 +14,7 @@ export const Customisation = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const { selectedProductIds } = useContext(CustomisationContext);
+  const { selectedProductIds, selectedLanguage } = useContext(CustomisationContext);
   const [selectedProductsList, setSelectedProductsList] = useState([]);
   
   const [activeTab, setActiveTab] = useState('features'); // features, preview, summary
@@ -31,30 +31,40 @@ export const Customisation = () => {
   // Fetch full product details for selected product IDs
   useEffect(() => {
     const fetchSelectedProductsDetails = async () => {
-      if (selectedProductIds.length === 0) return;
+      if (selectedProductIds.length === 0) {
+        setSelectedProductsList([]);
+        setLoading(false);
+        return;
+      }
       
       setLoading(true);
       setError('');
       try {
-        // Fetch all products for user's home state to extract data
-        const stateId = user?.stateId;
-        if (stateId) {
-          const response = await productService.getProducts(stateId);
-          const allProducts = response.data || [];
-          
-          // Filter products matching our selected IDs
-          const matched = allProducts.filter(p => selectedProductIds.includes(p.id));
-          setSelectedProductsList(matched);
-        }
+        const lang = selectedLanguage || 'tamil';
+        const response = await productService.getProducts(user?.stateId || null, null, '', lang);
+        const allProducts = response?.data && response.data.length > 0
+          ? response.data
+          : productService.getAllProductsSync();
+        
+        // Preserve selection order and map to complete product objects
+        const matched = selectedProductIds.map(id => {
+          return allProducts.find(p => p.id === Number(id));
+        }).filter(Boolean);
+        
+        setSelectedProductsList(matched);
       } catch (err) {
         console.error('Failed to load selected ingredients details:', err);
-        setError('Failed to load ingredient details. Please try again.');
+        const fallbackAll = productService.getAllProductsSync();
+        const matched = selectedProductIds.map(id => {
+          return fallbackAll.find(p => p.id === Number(id));
+        }).filter(Boolean);
+        setSelectedProductsList(matched);
       } finally {
         setLoading(false);
       }
     };
     fetchSelectedProductsDetails();
-  }, [selectedProductIds, user]);
+  }, [selectedProductIds, selectedLanguage, user]);
 
   if (loading) {
     return <Loader fullPage={true} message="Loading customisation suite..." />;
