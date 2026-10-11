@@ -63,20 +63,20 @@ export const PantrySticker = ({
     return cleaned || englishName;
   }, [product, language, englishName]);
 
-  // Calculate dynamic typography scaling for long regional names
+  // Calculate responsive typography scaling for regional names (supports Indian script combining marks)
   const regionalFontSize = useMemo(() => {
     const len = regionalName.length;
-    if (len > 24) return '1.05rem';
-    if (len > 18) return '1.2rem';
-    if (len > 12) return '1.4rem';
-    return '1.65rem';
+    if (len > 24) return 'clamp(0.95rem, 1.35vw, 1.15rem)';
+    if (len > 18) return 'clamp(1.1rem, 1.6vw, 1.35rem)';
+    if (len > 12) return 'clamp(1.25rem, 1.9vw, 1.55rem)';
+    return 'clamp(1.4rem, 2.2vw, 1.75rem)';
   }, [regionalName]);
 
   const englishFontSize = useMemo(() => {
     const len = englishName.length;
-    if (len > 24) return '0.72rem';
-    if (len > 16) return '0.8rem';
-    return '0.88rem';
+    if (len > 24) return 'clamp(0.65rem, 0.8vw, 0.75rem)';
+    if (len > 16) return 'clamp(0.72rem, 0.95vw, 0.82rem)';
+    return 'clamp(0.8rem, 1.1vw, 0.92rem)';
   }, [englishName]);
 
   const cornerRadius = shape.id === 'square' ? corner.radiusSquare : corner.radiusRectangle;

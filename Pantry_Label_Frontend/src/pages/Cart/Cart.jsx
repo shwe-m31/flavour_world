@@ -33,6 +33,29 @@ export const Cart = () => {
       <Header />
 
       <main className="cart-content-area">
+        <div className="cart-top-nav-bar" style={{ marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button
+            type="button"
+            className="cart-back-dashboard-btn-top"
+            onClick={() => navigate('/dashboard')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: '#ffffff',
+              border: '1.5px solid #d1d5db',
+              borderRadius: '8px',
+              padding: '0.45rem 0.95rem',
+              fontSize: '0.85rem',
+              fontWeight: '700',
+              color: '#374151',
+              cursor: 'pointer'
+            }}
+          >
+            ← Back to Dashboard / Add More Ingredients
+          </button>
+        </div>
+
         <div className="cart-header-title">
           <h2>Shopping Cart</h2>
           <p className="subtitle">Review the ingredients you selected for customized labels.</p>

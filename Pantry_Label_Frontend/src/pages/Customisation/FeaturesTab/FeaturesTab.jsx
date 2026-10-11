@@ -9,7 +9,7 @@ import {
 } from '../labelCustomisationData';
 import './FeaturesTab.css';
 
-export const FeaturesTab = () => {
+export const FeaturesTab = ({ onNext, onBack }) => {
   const {
     selectedTheme,
     setSelectedTheme,
@@ -267,6 +267,28 @@ export const FeaturesTab = () => {
           </label>
         </div>
       </section>
+
+      {/* Bottom Step Navigation Bar */}
+      <div className="tab-bottom-nav-bar">
+        {onBack && (
+          <button
+            type="button"
+            className="tab-nav-btn btn-back"
+            onClick={onBack}
+          >
+            ← Back to Dashboard
+          </button>
+        )}
+        {onNext && (
+          <button
+            type="button"
+            className="tab-nav-btn btn-proceed"
+            onClick={onNext}
+          >
+            Next: Live Preview Sheet →
+          </button>
+        )}
+      </div>
     </div>
   );
 };

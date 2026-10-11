@@ -132,6 +132,18 @@
   text-align: center;
 }
 
+.btn-back-step {
+  background: #ffffff;
+  color: #374151;
+  border: 1.5px solid #d1d5db;
+}
+
+.btn-back-step:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
 .btn-cart {
   background: #f3f4f6;
   color: #374151;

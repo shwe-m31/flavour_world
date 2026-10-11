@@ -1,6 +1,41 @@
--- Insert States
+-- Insert States (All 28 Indian States and 8 Union Territories)
 INSERT INTO states (id, name) VALUES
-(1, 'Delhi'), (2, 'Maharashtra'), (3, 'Karnataka'), (4, 'Tamil Nadu'), (5, 'West Bengal');
+(1, 'Delhi'),
+(2, 'Maharashtra'),
+(3, 'Karnataka'),
+(4, 'Tamil Nadu'),
+(5, 'West Bengal'),
+(6, 'Andhra Pradesh'),
+(7, 'Arunachal Pradesh'),
+(8, 'Assam'),
+(9, 'Bihar'),
+(10, 'Chhattisgarh'),
+(11, 'Goa'),
+(12, 'Gujarat'),
+(13, 'Haryana'),
+(14, 'Himachal Pradesh'),
+(15, 'Jharkhand'),
+(16, 'Kerala'),
+(17, 'Madhya Pradesh'),
+(18, 'Manipur'),
+(19, 'Meghalaya'),
+(20, 'Mizoram'),
+(21, 'Nagaland'),
+(22, 'Odisha'),
+(23, 'Punjab'),
+(24, 'Rajasthan'),
+(25, 'Sikkim'),
+(26, 'Telangana'),
+(27, 'Tripura'),
+(28, 'Uttar Pradesh'),
+(29, 'Uttarakhand'),
+(30, 'Andaman and Nicobar Islands'),
+(31, 'Chandigarh'),
+(32, 'Dadra and Nagar Haveli and Daman and Diu'),
+(33, 'Jammu and Kashmir'),
+(34, 'Ladakh'),
+(35, 'Lakshadweep'),
+(36, 'Puducherry');
 
 -- Insert Categories (8 Standard Filter Categories)
 INSERT INTO categories (id, name, description) VALUES

@@ -4,21 +4,10 @@ import catalogData from './catalogData.json';
 
 const API_BASE = import.meta.env?.VITE_API_URL || 'http://localhost:8080';
 
-// Fallback Indian States
-const DEFAULT_STATES = [
-  { id: 23, name: 'Tamil Nadu' },
-  { id: 11, name: 'Karnataka' },
-  { id: 12, name: 'Kerala' },
-  { id: 14, name: 'Maharashtra' },
-  { id: 24, name: 'Telangana' },
-  { id: 1, name: 'Andhra Pradesh' },
-  { id: 28, name: 'West Bengal' },
-  { id: 7, name: 'Gujarat' },
-  { id: 20, name: 'Punjab' },
-  { id: 26, name: 'Uttar Pradesh' },
-  { id: 32, name: 'Delhi' },
-  { id: 21, name: 'Rajasthan' }
-];
+import { INDIAN_STATES } from '../data/indianStates.js';
+
+// Fallback Indian States (all 28 states and 8 union territories)
+const DEFAULT_STATES = INDIAN_STATES;
 
 // 8 Standard Filter Categories (Preserve exact labels, ordering, and layout)
 const DEFAULT_CATEGORIES = [

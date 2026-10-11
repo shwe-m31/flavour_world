@@ -1,10 +1,10 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { CustomisationContext } from '../../../context/CustomisationContext';
 import PantrySticker from '../PantrySticker';
 import { LANGUAGES_LIST } from '../labelCustomisationData';
 import './LivePreviewTab.css';
 
-export const LivePreviewTab = ({ selectedProducts = [] }) => {
+export const LivePreviewTab = ({ selectedProducts = [], onNext, onBack }) => {
   const {
     selectedTheme,
     selectedShape,
@@ -13,18 +13,37 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
     selectedFont,
     showIllustration,
     selectedLanguage,
-    setSelectedLanguage
+    setSelectedLanguage,
+    sheetQuantity = 35
   } = useContext(CustomisationContext);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [viewMode, setViewMode] = useState('single'); // 'single' or 'sheet'
+  const [viewMode, setViewMode] = useState('sheet'); // Default to 'sheet' to highlight 5x7 / 5x8 layout!
+  const [currentSheetIndex, setCurrentSheetIndex] = useState(0);
 
-  // Keep active index in bounds if selectedProducts array changes
+  // Sheet layout constants matching Image 1 & 2
+  // Square: 5 columns x 7 rows = 35 per sheet (Portrait)
+  // Rectangle: 5 columns x 8 rows = 40 per sheet (Landscape)
+  const capacityPerSheet = selectedShape === 'square' ? 35 : 40;
+  const sheetCols = 5;
+  const sheetRows = selectedShape === 'square' ? 7 : 8;
+
+  // Calculate total sheets needed for ordered quantity or selected items
+  const totalItemsCount = Math.max(selectedProducts.length, sheetQuantity);
+  const totalSheets = Math.max(1, Math.ceil(totalItemsCount / capacityPerSheet));
+
+  // Keep active index and current sheet in bounds
   useEffect(() => {
     if (activeIndex >= selectedProducts.length && selectedProducts.length > 0) {
       setActiveIndex(0);
     }
   }, [selectedProducts.length, activeIndex]);
+
+  useEffect(() => {
+    if (currentSheetIndex >= totalSheets) {
+      setCurrentSheetIndex(0);
+    }
+  }, [totalSheets, currentSheetIndex]);
 
   if (selectedProducts.length === 0) {
     return (
@@ -32,19 +51,43 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
         <div className="empty-state-icon">🏷️</div>
         <h3>No Ingredients Selected</h3>
         <p>Please return to the dashboard and pick your pantry ingredients first.</p>
+        {onBack && (
+          <button type="button" className="tab-nav-btn btn-back" onClick={onBack} style={{ marginTop: '1rem' }}>
+            ← Back to Dashboard
+          </button>
+        )}
       </div>
     );
   }
 
   const currentProduct = selectedProducts[activeIndex] || selectedProducts[0];
 
-  const handleNext = () => {
-    setActiveIndex(prev => (prev === selectedProducts.length - 1 ? 0 : prev + 1));
+  const handleNextSticker = () => {
+    setActiveIndex((prev) => (prev === selectedProducts.length - 1 ? 0 : prev + 1));
   };
 
-  const handlePrev = () => {
-    setActiveIndex(prev => (prev === 0 ? selectedProducts.length - 1 : prev - 1));
+  const handlePrevSticker = () => {
+    setActiveIndex((prev) => (prev === 0 ? selectedProducts.length - 1 : prev - 1));
   };
+
+  // Generate cells for the currently active sheet (strictly capacityPerSheet items)
+  const sheetCells = useMemo(() => {
+    const startIndex = currentSheetIndex * capacityPerSheet;
+    const cells = [];
+
+    for (let i = 0; i < capacityPerSheet; i++) {
+      const globalIdx = startIndex + i;
+      const product = selectedProducts[globalIdx] || null;
+      cells.push({
+        slotNumber: globalIdx + 1,
+        globalIndex: globalIdx,
+        product,
+        isEmpty: !product
+      });
+    }
+
+    return cells;
+  }, [currentSheetIndex, capacityPerSheet, selectedProducts]);
 
   return (
     <div className="live-preview-tab-container">
@@ -52,10 +95,14 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
       <div className="preview-toolbar-row">
         <div className="toolbar-left-group">
           <span className="sticker-count-badge">
-            Sticker {activeIndex + 1} of {selectedProducts.length}
+            {viewMode === 'single'
+              ? `Sticker ${activeIndex + 1} of ${selectedProducts.length}`
+              : `Sheet View • ${selectedShape === 'square' ? '5 × 7 Grid (35/sheet)' : '5 × 8 Grid (40/sheet)'}`}
           </span>
           <h4 className="active-item-title">
-            {currentProduct?.name || 'Selected Ingredient'}
+            {viewMode === 'single'
+              ? currentProduct?.name || 'Selected Ingredient'
+              : `Physical Print Sheet (Sheet ${currentSheetIndex + 1} of ${totalSheets})`}
           </h4>
         </div>
 
@@ -83,19 +130,19 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
           <div className="view-mode-pill-toggle">
             <button
               type="button"
+              className={`mode-btn ${viewMode === 'sheet' ? 'active' : ''}`}
+              onClick={() => setViewMode('sheet')}
+              title="View full sticker sheet grid (5x7 or 5x8)"
+            >
+              Full Sheet Grid ({capacityPerSheet}/sheet)
+            </button>
+            <button
+              type="button"
               className={`mode-btn ${viewMode === 'single' ? 'active' : ''}`}
               onClick={() => setViewMode('single')}
               title="Inspect single sticker close-up"
             >
               Single Sticker
-            </button>
-            <button
-              type="button"
-              className={`mode-btn ${viewMode === 'sheet' ? 'active' : ''}`}
-              onClick={() => setViewMode('sheet')}
-              title="View full sticker sheet grid"
-            >
-              Sheet View ({selectedProducts.length})
             </button>
           </div>
         </div>
@@ -109,7 +156,7 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
             <button
               type="button"
               className="canvas-arrow-btn arrow-prev"
-              onClick={handlePrev}
+              onClick={handlePrevSticker}
               aria-label="Previous sticker"
             >
               ‹
@@ -134,7 +181,7 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
             <button
               type="button"
               className="canvas-arrow-btn arrow-next"
-              onClick={handleNext}
+              onClick={handleNextSticker}
               aria-label="Next sticker"
             >
               ›
@@ -142,47 +189,119 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
           )}
         </div>
       ) : (
-        /* Sheet Grid View */
+        /* Sheet Grid View (Exact reproduction of hand-drawn Image 1 & 2) */
         <div className="sheet-preview-viewport">
-          <div className="sheet-paper-container">
+          <div className={`sheet-paper-container sheet-orientation-${selectedShape === 'square' ? 'portrait' : 'landscape'}`}>
             <div className="sheet-header-meta">
-              <span className="sheet-brand">FLAVOUR WORLD • PREMIUM PANTRY COLLECTION</span>
-              <span className="sheet-spec">
-                {selectedShape === 'square' ? 'Square Labels (1:1)' : 'Rectangular Labels (1.4:1)'} • {selectedProducts.length} Individual Die-Cut Stickers
-              </span>
+              <div className="sheet-meta-title-col">
+                <span className="sheet-brand">FLAVOUR WORLD • PHYSICAL DIE-CUT STICKER SHEET</span>
+                <span className="sheet-spec">
+                  {selectedShape === 'square'
+                    ? 'Square Die-Cut Labels (1:1) • 5 Columns × 7 Rows = 35 Labels/Sheet'
+                    : 'Rectangular Die-Cut Labels (1.4:1) • 5 Columns × 8 Rows = 40 Labels/Sheet'}
+                </span>
+              </div>
+
+              {/* Sheet Navigation for multiple sheets (e.g. 70, 80, 105, 140 labels) */}
+              {totalSheets > 1 && (
+                <div className="sheet-pagination-box">
+                  <button
+                    type="button"
+                    className="sheet-nav-pill-btn"
+                    disabled={currentSheetIndex === 0}
+                    onClick={() => setCurrentSheetIndex((prev) => Math.max(0, prev - 1))}
+                  >
+                    ‹ Prev Sheet
+                  </button>
+                  <span className="sheet-nav-count">
+                    Sheet {currentSheetIndex + 1} / {totalSheets}
+                  </span>
+                  <button
+                    type="button"
+                    className="sheet-nav-pill-btn"
+                    disabled={currentSheetIndex >= totalSheets - 1}
+                    onClick={() => setCurrentSheetIndex((prev) => Math.min(totalSheets - 1, prev + 1))}
+                  >
+                    Next Sheet ›
+                  </button>
+                </div>
+              )}
             </div>
 
-            <div className="sheet-stickers-grid">
-              {selectedProducts.map((prod, idx) => (
-                <div
-                  key={prod.id || idx}
-                  className={`sheet-sticker-cell ${idx === activeIndex ? 'cell-active' : ''}`}
-                  onClick={() => {
-                    setActiveIndex(idx);
-                    setViewMode('single');
-                  }}
-                  title="Click to inspect this sticker close-up"
-                >
-                  <PantrySticker
-                    product={prod}
-                    language={selectedLanguage}
-                    themeId={selectedTheme}
-                    shapeId={selectedShape}
-                    cornerId={selectedCorner}
-                    borderId={selectedBorderStyle}
-                    fontId={selectedFont}
-                    showIllustration={showIllustration}
-                    className="sheet-mini-sticker"
-                  />
-                </div>
-              ))}
+            {/* The 5-Column Cutting Grid (5x7 for Square, 5x8 for Rectangle) */}
+            <div
+              className={`sheet-stickers-cutting-grid grid-shape-${selectedShape}`}
+              style={{
+                '--grid-cols': sheetCols,
+                '--grid-rows': sheetRows
+              }}
+            >
+              {sheetCells.map((cell) => {
+                if (cell.product) {
+                  const isCellActive = cell.globalIndex === activeIndex;
+                  return (
+                    <div
+                      key={`slot-${cell.slotNumber}`}
+                      className={`sheet-sticker-cell shape-${selectedShape} ${isCellActive ? 'cell-active' : ''}`}
+                      onClick={() => {
+                        setActiveIndex(cell.globalIndex);
+                        setViewMode('single');
+                      }}
+                      title={`Label #${cell.slotNumber}: ${cell.product.name} (Click for close-up view)`}
+                    >
+                      {/* Cutting Guideline Frame */}
+                      <div className="sheet-cell-cut-frame">
+                        <PantrySticker
+                          product={cell.product}
+                          language={selectedLanguage}
+                          themeId={selectedTheme}
+                          shapeId={selectedShape}
+                          cornerId={selectedCorner}
+                          borderId={selectedBorderStyle}
+                          fontId={selectedFont}
+                          showIllustration={showIllustration}
+                          className="sheet-mini-sticker"
+                        />
+                      </div>
+                      <span className="sheet-slot-number-tag">#{cell.slotNumber}</span>
+                    </div>
+                  );
+                }
+
+                // Empty die-cut slot marker (matches hand-drawn empty rows in Image 1 & 2)
+                return (
+                  <div
+                    key={`slot-${cell.slotNumber}`}
+                    className={`sheet-sticker-cell shape-${selectedShape} cell-empty-slot`}
+                    title={`Slot #${cell.slotNumber}: Empty Die-Cut Slot / Cutting Guideline`}
+                  >
+                    <div className="sheet-cell-cut-frame">
+                      <div className="empty-slot-diecut-placeholder">
+                        <span className="empty-slot-icon">✂</span>
+                        <span className="empty-slot-text">Cut Guide</span>
+                        <span className="empty-slot-idx">Slot #{cell.slotNumber}</span>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Bottom Sheet Footnote matching reference annotations */}
+            <div className="sheet-footer-legend">
+              <span className="cutting-guide-hint">
+                ✂️ Die-cut cutting guidelines between rows and columns (Margin gutter: 3mm)
+              </span>
+              <span className="sheet-calc-formula">
+                {selectedShape === 'square' ? '7 × 5 = 35 Labels' : '8 × 5 = 40 Labels'}
+              </span>
             </div>
           </div>
         </div>
       )}
 
       {/* Bottom Thumbnail Strip for Fast Navigation in Single Mode */}
-      {selectedProducts.length > 1 && (
+      {viewMode === 'single' && selectedProducts.length > 1 && (
         <div className="preview-thumbnail-strip">
           <div className="strip-scroll-area">
             {selectedProducts.map((prod, idx) => {
@@ -212,6 +331,28 @@ export const LivePreviewTab = ({ selectedProducts = [] }) => {
           secondary English naming, and professional die-cut corner styling. All labels will be printed on
           waterproof, grease-resistant vinyl label stock suitable for kitchen containers and glass jars.
         </div>
+      </div>
+
+      {/* Bottom Step Navigation Bar */}
+      <div className="tab-bottom-nav-bar">
+        {onBack && (
+          <button
+            type="button"
+            className="tab-nav-btn btn-back"
+            onClick={onBack}
+          >
+            ← Back to Design Options
+          </button>
+        )}
+        {onNext && (
+          <button
+            type="button"
+            className="tab-nav-btn btn-proceed"
+            onClick={onNext}
+          >
+            Proceed to Order Summary →
+          </button>
+        )}
       </div>
     </div>
   );

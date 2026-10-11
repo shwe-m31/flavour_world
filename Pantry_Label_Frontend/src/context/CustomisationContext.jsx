@@ -7,6 +7,19 @@ export const CustomisationContext = createContext(null);
 export const CustomisationProvider = ({ children }) => {
   const [selectedProductIds, setSelectedProductIds] = useState([]);
   
+  // Household / Kitchen Persona (Step 1)
+  const [consumerCategory, setConsumerCategory] = useState('Family');
+
+  // Browsing State ID (Step 2) - Defaults to 4 (Tamil Nadu)
+  const [selectedStateId, setSelectedStateId] = useState('4');
+
+  // Cooking Preference (Step 3) - 'Vegetarian', 'Non-Vegetarian', 'Both'
+  const [cookingPreference, setCookingPreference] = useState('Vegetarian');
+
+  // Containers / Sticker Sheet Capacity (Step 4)
+  // For Square: 35, 70, 105, 140... For Rectangle: 40, 80, 120, 160...
+  const [sheetQuantity, setSheetQuantity] = useState(35);
+
   // Luxury Theme Palette
   const [selectedTheme, setSelectedTheme] = useState('navy-gold');
   // Backward compatibility alias for selectedBackground
@@ -29,6 +42,22 @@ export const CustomisationProvider = ({ children }) => {
   const [selectedLanguage, setSelectedLanguage] = useState(() => {
     return localStorage.getItem('fw_selected_lang') || 'tamil';
   });
+
+  // Automatically adjust sheet quantity when label shape changes (Square: 35, Rectangle: 40)
+  const handleSetShape = (newShape) => {
+    setSelectedShape(newShape);
+    if (newShape === 'square') {
+      setSheetQuantity(prev => {
+        const sheets = Math.max(1, Math.round(prev / 40) || 1);
+        return sheets * 35;
+      });
+    } else if (newShape === 'rectangle') {
+      setSheetQuantity(prev => {
+        const sheets = Math.max(1, Math.round(prev / 35) || 1);
+        return sheets * 40;
+      });
+    }
+  };
 
   // Keep selectedBackground synced with selectedTheme
   useEffect(() => {
@@ -88,10 +117,19 @@ export const CustomisationProvider = ({ children }) => {
     selectedProductIds,
     setSelectedProductIds,
     toggleProductSelection,
+    consumerCategory,
+    setConsumerCategory,
+    selectedStateId,
+    setSelectedStateId,
+    cookingPreference,
+    setCookingPreference,
+    sheetQuantity,
+    setSheetQuantity,
     selectedTheme,
     setSelectedTheme,
     selectedShape,
     setSelectedShape,
+    handleSetShape,
     selectedCorner,
     setSelectedCorner,
     selectedBorderStyle,

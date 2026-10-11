@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import FeaturesTab from './FeaturesTab/FeaturesTab';
@@ -75,6 +76,22 @@ export const Customisation = () => {
       <Header />
 
       <main className="customisation-content-area">
+        {/* Top Back Navigation Bar */}
+        <div className="customisation-top-nav-bar">
+          <button
+            type="button"
+            className="customisation-back-dashboard-btn"
+            onClick={() => navigate('/dashboard')}
+            title="Return to ingredients selection with all choices saved"
+          >
+            <ArrowLeft size={16} />
+            <span>← Back to Dashboard (Selection)</span>
+          </button>
+          <div className="customisation-selection-pill">
+            <span>{selectedProductIds.length} Labels Selected</span>
+          </div>
+        </div>
+
         <div className="customisation-header-block">
           <h2>Customize Your Pantry Labels</h2>
           <p className="subtitle">Design beautiful, bilingual labels tailored to your jars.</p>
@@ -104,9 +121,25 @@ export const Customisation = () => {
         </div>
 
         <div className="active-tab-render-window">
-          {activeTab === 'features' && <FeaturesTab />}
-          {activeTab === 'preview' && <LivePreviewTab selectedProducts={selectedProductsList} />}
-          {activeTab === 'summary' && <SummaryTab selectedProducts={selectedProductsList} />}
+          {activeTab === 'features' && (
+            <FeaturesTab
+              onNext={() => setActiveTab('preview')}
+              onBack={() => navigate('/dashboard')}
+            />
+          )}
+          {activeTab === 'preview' && (
+            <LivePreviewTab
+              selectedProducts={selectedProductsList}
+              onNext={() => setActiveTab('summary')}
+              onBack={() => setActiveTab('features')}
+            />
+          )}
+          {activeTab === 'summary' && (
+            <SummaryTab
+              selectedProducts={selectedProductsList}
+              onBack={() => setActiveTab('preview')}
+            />
+          )}
         </div>
       </main>
     </div>

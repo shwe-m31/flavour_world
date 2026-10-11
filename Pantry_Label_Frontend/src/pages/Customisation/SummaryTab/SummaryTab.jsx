@@ -12,7 +12,7 @@ import {
 import Loader from '../../../components/Loader/Loader';
 import './SummaryTab.css';
 
-export const SummaryTab = ({ selectedProducts = [] }) => {
+export const SummaryTab = ({ selectedProducts = [], onBack }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const {
@@ -145,6 +145,16 @@ export const SummaryTab = ({ selectedProducts = [] }) => {
         </div>
 
         <div className="summary-action-btns">
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="summary-btn btn-back-step"
+              disabled={loading}
+            >
+              ← Back to Live Preview
+            </button>
+          )}
           <button
             onClick={() => handleAction('addToCart')}
             className="summary-btn btn-cart"

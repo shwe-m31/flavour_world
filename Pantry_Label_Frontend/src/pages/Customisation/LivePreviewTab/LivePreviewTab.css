@@ -1,5 +1,10 @@
 /* ============================================================
    FLAVOUR WORLD — LIVE PREVIEW TAB STYLING
+   Accurate reproduction of hand-drawn sheet references:
+   - Image 1: 5 Columns × 7 Rows = 35 Labels (Portrait)
+   - Image 2: 5 Columns × 8 Rows = 40 Labels (Landscape)
+   - Die-Cut Cutting Guidelines & Gutters
+   - Empty Slot Cut Guides & Multi-Sheet Navigation
    ============================================================ */
 
 .live-preview-tab-container {
@@ -11,7 +16,7 @@
   border-radius: 18px;
   border: 1px solid #e5e7eb;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-  max-width: 860px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 
@@ -98,54 +103,42 @@
   background: transparent;
   border: none;
   padding: 0.45rem 0.85rem;
-  border-radius: 7px;
-  font-size: 0.78rem;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #4b5563;
   cursor: pointer;
   transition: all 0.2s ease;
   outline: none;
 }
 
-.mode-btn:hover {
-  color: #111827;
-}
-
 .mode-btn.active {
   background: #ffffff;
   color: #111827;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 /* ============================================================
-   SINGLE PREVIEW VIEWPORT (STUDIO CANVAS)
+   SINGLE PREVIEW VIEWPORT
    ============================================================ */
 .single-preview-viewport {
-  width: 100%;
-  min-height: 420px;
-  background-color: #ece9e2;
-  background-image:
-    radial-gradient(#d8d4cb 1px, transparent 1px),
-    radial-gradient(#d8d4cb 1px, #ece9e2 1px);
-  background-size: 24px 24px;
-  background-position: 0 0, 12px 12px;
-  border-radius: 16px;
-  border: 1px solid #ddd8cc;
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
+  position: relative;
+  background: linear-gradient(145deg, #f5f3ee 0%, #ebe7df 100%);
+  border-radius: 18px;
+  min-height: 440px;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
   padding: 2.5rem 1.5rem;
-  box-sizing: border-box;
+  border: 1px solid #e0dcd3;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.03);
 }
 
 .sticker-stage-anchor {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  max-width: 100%;
 }
 
 .canvas-arrow-btn {
@@ -154,19 +147,18 @@
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
-  background: #ffffff;
-  border: 1.5px solid #dcd7ca;
-  color: #1f2937;
   border-radius: 50%;
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
   font-size: 1.5rem;
-  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 10;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   transition: all 0.2s ease;
+  z-index: 10;
   outline: none;
 }
 
@@ -190,28 +182,37 @@
    ============================================================ */
 .sheet-preview-viewport {
   width: 100%;
-  background: #e5e2db;
+  background: #ebe7de;
   border-radius: 16px;
-  padding: 2rem 1.5rem;
+  padding: 2rem 1.25rem;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
+  overflow-x: auto;
 }
 
 .sheet-paper-container {
   width: 100%;
-  max-width: 760px;
   background: #ffffff;
-  border-radius: 8px;
-  padding: 2rem;
+  border-radius: 6px;
+  padding: 1.75rem;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
-    0 16px 32px -8px rgba(0, 0, 0, 0.15);
-  border: 1px solid #d1d5db;
+    0 20px 40px -10px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid #2d3748;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1rem;
   box-sizing: border-box;
+  position: relative;
+}
+
+.sheet-paper-container.sheet-orientation-portrait {
+  max-width: 820px;
+}
+
+.sheet-paper-container.sheet-orientation-landscape {
+  max-width: 980px;
 }
 
 .sheet-header-meta {
@@ -219,16 +220,22 @@
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1.5px dashed #e5e7eb;
+  gap: 0.75rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 2px solid #374151;
+}
+
+.sheet-meta-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
 }
 
 .sheet-brand {
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   font-weight: 800;
   letter-spacing: 0.12em;
-  color: #9ca3af;
+  color: #111827;
 }
 
 .sheet-spec {
@@ -237,51 +244,231 @@
   color: #6b7280;
 }
 
-.sheet-stickers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-  gap: 1.5rem;
-  justify-items: center;
-}
-
-.sheet-sticker-cell {
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 12px;
-  transition: all 0.22s ease;
+.sheet-pagination-box {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+}
+
+.sheet-nav-pill-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sheet-nav-pill-btn:hover:not(:disabled) {
+  background: #1e293b;
+  color: #ffffff;
+}
+
+.sheet-nav-pill-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.sheet-nav-count {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+/* ============================================================
+   STRICT 5-COLUMN DIE-CUT CUTTING GRID (Image 1 & 2)
+   ============================================================ */
+.sheet-stickers-cutting-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  background: #f4f1ea;
+  border: 1.5px solid #4b5563;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* Individual Cell in the Sheet */
+.sheet-sticker-cell {
+  position: relative;
+  background: #ffffff;
+  border: 1px dashed #94a3b8;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .sheet-sticker-cell:hover {
   background: #fdfaf3;
-  transform: translateY(-3px);
+  transform: scale(1.02);
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .sheet-sticker-cell.cell-active {
-  background: #fff8e8;
-  outline: 2px dashed #c59f53;
-  outline-offset: 4px;
+  outline: 2px solid #c59f53;
+  outline-offset: 2px;
 }
 
+.sheet-sticker-cell.shape-square {
+  aspect-ratio: 1 / 1;
+}
+
+.sheet-sticker-cell.shape-rectangle {
+  aspect-ratio: 1.4 / 1;
+}
+
+.sheet-cell-cut-frame {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.sheet-slot-number-tag {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #94a3b8;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+/* Mini Sticker Scaling Inside Sheet Cells */
 .sheet-mini-sticker {
   width: 100% !important;
-  max-width: 220px !important;
-  height: auto !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  box-shadow: none !important;
+}
+
+.sheet-mini-sticker .pantry-sticker-surface {
+  padding: 6px !important;
+  box-shadow: none !important;
+}
+
+.sheet-mini-sticker .pantry-sticker-inner-border {
+  padding: 4px 6px !important;
+}
+
+.sheet-mini-sticker .pantry-sticker-illustration-row {
+  gap: 4px !important;
+}
+
+.sheet-mini-sticker .flourish-line {
+  max-width: 18px !important;
+}
+
+.sheet-mini-sticker .illustration-holder svg {
+  width: 18px !important;
+  height: 18px !important;
 }
 
 .sheet-mini-sticker .pantry-sticker-regional-title {
-  font-size: 1.05rem !important;
+  font-size: clamp(0.72rem, 1.2vw, 0.95rem) !important;
+  line-height: 1.18 !important;
+}
+
+.sheet-mini-sticker .pantry-sticker-divider {
+  margin: 1px 0 !important;
+  width: 50% !important;
+}
+
+.sheet-mini-sticker .divider-floret {
+  font-size: 6px !important;
 }
 
 .sheet-mini-sticker .pantry-sticker-english-title {
-  font-size: 0.65rem !important;
+  font-size: clamp(0.5rem, 0.8vw, 0.65rem) !important;
+  letter-spacing: 0.08em !important;
+}
+
+/* Empty Die-Cut Slot Placeholder */
+.sheet-sticker-cell.cell-empty-slot {
+  background: #fbfbfa;
+  border: 1px dashed #cbd5e1;
+  cursor: default;
+}
+
+.sheet-sticker-cell.cell-empty-slot:hover {
+  transform: none;
+  background: #fbfbfa;
+  box-shadow: none;
+}
+
+.empty-slot-diecut-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: #94a3b8;
+  width: 100%;
+  height: 100%;
+  border: 1px dotted #cbd5e1;
+  border-radius: 4px;
+}
+
+.empty-slot-icon {
+  font-size: 0.75rem;
+}
+
+.empty-slot-text {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.empty-slot-idx {
+  font-size: 0.58rem;
+  color: #cbd5e1;
+}
+
+/* Sheet Footnote Legend (matching Image 1 & 2 annotations) */
+.sheet-footer-legend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1.5px solid #374151;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4b5563;
+}
+
+.sheet-calc-formula {
+  font-family: monospace;
+  font-size: 0.85rem;
+  color: #111827;
+  background: #f3f4f6;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
 }
 
 /* ============================================================
-   BOTTOM THUMBNAIL STRIP
+   BOTTOM THUMBNAIL STRIP & INFORMATION CARD
    ============================================================ */
 .preview-thumbnail-strip {
   width: 100%;
@@ -320,61 +507,96 @@
 }
 
 .thumbnail-pill-btn.active {
-  background: #0d1a2d;
-  color: #faf6ee;
-  border-color: #0d1a2d;
-  box-shadow: 0 2px 6px rgba(13, 26, 45, 0.2);
+  background: #111827;
+  color: #ffffff;
+  border-color: #111827;
 }
 
 .thumb-index {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  background: rgba(0, 0, 0, 0.08);
-  border-radius: 50%;
-  font-size: 0.65rem;
+  font-size: 0.7rem;
+  opacity: 0.7;
 }
 
-.thumbnail-pill-btn.active .thumb-index {
-  background: rgba(255, 255, 255, 0.2);
-  color: #d6b87d;
-}
-
-/* ============================================================
-   INFO CALLOUT
-   ============================================================ */
 .preview-information-card {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
-  background: #fffdf9;
-  border: 1px solid #f2e4c9;
+  gap: 0.75rem;
+  background: #faf8f5;
+  border: 1px solid #ede8de;
   border-radius: 12px;
   padding: 1rem 1.25rem;
 }
 
 .info-icon {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
+  color: #c59f53;
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .info-text {
   font-size: 0.82rem;
-  color: #6b5c3b;
   line-height: 1.5;
+  color: #4b5563;
 }
 
 .info-text strong {
-  color: #3f3114;
+  color: #1f2937;
 }
 
-/* Empty State */
+/* ============================================================
+   STEP NAVIGATION BAR (Back & Next buttons)
+   ============================================================ */
+.tab-bottom-nav-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1.5px solid #f1f5f9;
+}
+
+.tab-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.tab-nav-btn.btn-back {
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  color: #374151;
+}
+
+.tab-nav-btn.btn-back:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  transform: translateX(-2px);
+}
+
+.tab-nav-btn.btn-proceed {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+}
+
+.tab-nav-btn.btn-proceed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+
 .live-preview-empty {
   text-align: center;
-  padding: 4rem 1.5rem;
+  padding: 3.5rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -397,29 +619,4 @@
   font-size: 0.9rem;
   color: #6b7280;
   margin: 0;
-}
-
-@media (max-width: 640px) {
-  .live-preview-tab-container {
-    padding: 1.25rem 1rem;
-  }
-  .preview-toolbar-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .toolbar-right-group {
-    width: 100%;
-    justify-content: space-between;
-  }
-  .canvas-arrow-btn {
-    width: 36px;
-    height: 36px;
-    font-size: 1.2rem;
-  }
-  .arrow-prev {
-    left: 0.5rem;
-  }
-  .arrow-next {
-    right: 0.5rem;
-  }
 }

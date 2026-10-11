@@ -59,6 +59,29 @@ export const Checkout = () => {
       <Header />
 
       <main className="checkout-content-area">
+        <div className="checkout-top-nav-bar" style={{ marginBottom: '1rem' }}>
+          <button
+            type="button"
+            className="checkout-back-cart-btn"
+            onClick={() => navigate('/cart')}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: '#ffffff',
+              border: '1.5px solid #d1d5db',
+              borderRadius: '8px',
+              padding: '0.45rem 0.9rem',
+              fontSize: '0.85rem',
+              fontWeight: '700',
+              color: '#374151',
+              cursor: 'pointer'
+            }}
+          >
+            ← Back to Cart
+          </button>
+        </div>
+
         <ProgressSteps currentStep={currentStep} />
 
         <div className="checkout-grid-layout">
