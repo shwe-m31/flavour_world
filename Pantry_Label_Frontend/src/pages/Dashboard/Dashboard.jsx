@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Check, Sparkles, Utensils, Users, Home, Building, ChefHat, Leaf, Drumstick, RotateCcw } from 'lucide-react';
+import { ArrowLeft, Check, Sparkles, Utensils, Users, Home, Building, ChefHat, Leaf, Drumstick, RotateCcw, X, UtensilsCrossed } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import CategoryBar from '../../components/CategoryBar/CategoryBar';
 import IngredientCard from '../../components/IngredientCard/IngredientCard';
@@ -207,36 +207,7 @@ export const Dashboard = () => {
     <div className="dashboard-page-container">
       <Header searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
-      {/* Top Banner & Navigation Header matching Image 3 */}
-      <div className="dashboard-hero-banner">
-        <div className="hero-banner-inner">
-          <div className="hero-brand-col">
-            <button
-              type="button"
-              className="hero-back-home-btn"
-              onClick={() => navigate('/')}
-              title="Return to Flavour World Home"
-            >
-              <ArrowLeft size={16} />
-              <span>Back to Home</span>
-            </button>
-            <div className="hero-title-group">
-              <span className="brand-badge">MY PANTRY MY STYLE</span>
-              <h1 className="hero-main-title">Pantry Label Customization Platform</h1>
-              <p className="hero-subtitle">Smart. Personalised. Beautiful.</p>
-            </div>
-          </div>
-
-          <div className="hero-feature-pills">
-            <span className="feature-pill">📍 All 36 States & UTs</span>
-            <span className="feature-pill">🌐 12+ Indian Scripts</span>
-            <span className="feature-pill">👁️ Live Sheet Preview</span>
-            <span className="feature-pill">💧 Waterproof Vinyl</span>
-            <span className="feature-pill">✂️ 5×7 & 5×8 Die-Cuts</span>
-          </div>
-        </div>
-      </div>
-
+      {/* Content Area */}
       <main className="dashboard-content">
         {error && <div className="dashboard-error">{error}</div>}
 
@@ -309,15 +280,15 @@ export const Dashboard = () => {
               {/* State Metadata Card */}
               <div className="state-info-badge-card">
                 <div className="state-meta-item">
-                  <span className="meta-label">🌐 Language:</span>
+                  <span className="meta-label">Language:</span>
                   <strong className="meta-value">{currentStateObj.language || 'Regional'}</strong>
                 </div>
                 <div className="state-meta-item">
-                  <span className="meta-label">🍲 Popular Cuisine:</span>
+                  <span className="meta-label">Popular Cuisine:</span>
                   <strong className="meta-value">{currentStateObj.cuisine || 'Traditional'}</strong>
                 </div>
                 <div className="state-meta-item">
-                  <span className="meta-label">🌾 Top Ingredients:</span>
+                  <span className="meta-label">Top Ingredients:</span>
                   <span className="meta-ingredients">{currentStateObj.topIngredients || 'Pantry Staples'}</span>
                 </div>
               </div>
@@ -364,7 +335,9 @@ export const Dashboard = () => {
                 className={`preference-pill ${cookingPreference === 'Both' ? 'active' : ''}`}
                 onClick={() => handlePreferenceChange('Both')}
               >
-                <span className="pref-icon-both">🥗</span>
+                <span className="pref-icon-both" style={{ display: 'flex', alignItems: 'center' }}>
+                  <UtensilsCrossed size={16} />
+                </span>
                 <span className="pref-text">Both</span>
                 {cookingPreference === 'Both' && <Check size={14} className="pref-check" />}
               </button>
@@ -479,6 +452,57 @@ export const Dashboard = () => {
             </div>
           </div>
 
+          {/* Top Selected Ingredients Tray (Req 4) */}
+          <div className="selected-ingredients-tray">
+            <div className="tray-header">
+              <div className="tray-title-badge">
+                <span className="tray-count-text">{selectedCount} Selected</span>
+                <span className="tray-capacity-info">
+                  ({selectedCount} / {sheetQuantity} labels • {selectedShape === 'square' ? '35/sheet' : '40/sheet'})
+                </span>
+              </div>
+              {selectedCount > 0 && (
+                <button
+                  type="button"
+                  className="tray-clear-btn"
+                  onClick={() => setSelectedProductIds([])}
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
+
+            {selectedCount === 0 ? (
+              <p className="tray-empty-text">
+                No ingredients selected yet. Click any ingredient card below to add to your label sheet.
+              </p>
+            ) : (
+              <div className="tray-chips-scroll">
+                {selectedProductIds.map((id) => {
+                  const item = allProducts.find((p) => p.id === id) || products.find((p) => p.id === id);
+                  if (!item) return null;
+                  const displayName = item.bilingualName && item.bilingualName !== item.name
+                    ? `${item.bilingualName} (${item.name})`
+                    : item.name;
+                  return (
+                    <div key={id} className="selected-tray-chip">
+                      <span className="chip-name">{displayName}</span>
+                      <button
+                        type="button"
+                        className="chip-remove-btn"
+                        onClick={() => toggleProductSelection(id)}
+                        aria-label={`Remove ${item.name}`}
+                        title={`Remove ${item.name}`}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {/* Category Filter Pills Bar */}
           <CategoryBar
             categories={categories}
@@ -486,8 +510,8 @@ export const Dashboard = () => {
             onSelectCategory={setSelectedCategoryId}
           />
 
-          {/* Main Layout: Products Grid + Side Summary Panel */}
-          <div className="dashboard-main-grid-layout">
+          {/* Main Layout: Products Grid (Full-width without sidebar, Req 5) */}
+          <div className="dashboard-main-grid-layout full-width">
             <div className="products-grid-column">
               {productsLoading ? (
                 <Loader message="Fetching regional pantry ingredients..." />
@@ -509,76 +533,6 @@ export const Dashboard = () => {
                 </div>
               )}
             </div>
-
-            {/* Right Summary Sidebar (Matching Image 3) */}
-            <aside className="selection-summary-sidebar">
-              <div className="summary-sticky-card">
-                <h4 className="summary-card-heading">Your Selection Summary</h4>
-                <hr className="summary-card-divider" />
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Who You Are</span>
-                  <strong className="detail-value">{consumerCategory}</strong>
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">State</span>
-                  <strong className="detail-value">{currentStateObj.name}</strong>
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Cooking Preference</span>
-                  <strong className="detail-value">{cookingPreference}</strong>
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Containers</span>
-                  <strong className="detail-value">{sheetQuantity}</strong>
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Items Selected</span>
-                  <strong className="detail-value">
-                    {selectedCount} / {sheetQuantity}
-                  </strong>
-                </div>
-
-                {/* Visual Progress Bar */}
-                <div className="summary-progress-bar-wrap">
-                  <div
-                    className="summary-progress-bar-fill"
-                    style={{ width: `${progressPercent}%` }}
-                  />
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Languages</span>
-                  <strong className="detail-value">
-                    {LANGUAGES.find((l) => l.code === selectedLanguage)?.name.split(' ')[0] || 'Tamil'} + English
-                  </strong>
-                </div>
-
-                <div className="summary-detail-row">
-                  <span className="detail-label">Shape</span>
-                  <strong className="detail-value" style={{ textTransform: 'capitalize' }}>
-                    {selectedShape}
-                  </strong>
-                </div>
-
-                <p className="summary-card-note">
-                  You can review and change all styling options in the next steps.
-                </p>
-
-                <button
-                  type="button"
-                  className="summary-proceed-cta-btn"
-                  onClick={handleProceed}
-                  disabled={selectedCount === 0}
-                >
-                  Proceed to Preview & Customization →
-                </button>
-              </div>
-            </aside>
           </div>
         </section>
       </main>

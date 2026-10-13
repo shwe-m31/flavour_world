@@ -8,39 +8,45 @@ const getHeaders = (token) => ({
   }
 });
 
-const DEFAULT_ADDRESSES = [
-  {
-    id: 1,
-    name: 'Priya Kumar',
-    phone: '+91 98401 23456',
-    flatHouseNo: 'Flat 4B, Shanthi Apts',
-    areaStreetName: '14th Cross, Gandhi Nagar, Adyar',
-    landmark: 'Near Adyar Bakery',
-    city: 'Chennai',
-    state: 'Tamil Nadu',
-    pincode: '600020'
-  }
-];
-
 export const addressService = {
   getAddresses: async (token) => {
     try {
-      const res = await axios.get(`${API_BASE}/api/addresses`, { ...getHeaders(token), timeout: 10000 });
-      if (res.data && res.data.length > 0) return res;
+      if (token) {
+        const res = await axios.get(`${API_BASE}/api/addresses`, { ...getHeaders(token), timeout: 10000 });
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) return res;
+      }
     } catch {
-      // Fallback
+      // Backend unavailable or error
     }
-    return { data: DEFAULT_ADDRESSES };
+    // Check localStorage saved addresses for guest / offline fallback
+    try {
+      const stored = localStorage.getItem('user_addresses');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return { data: parsed };
+        }
+      }
+    } catch {}
+    return { data: [] };
   },
 
   saveAddress: async (addressData, token) => {
     try {
-      const res = await axios.post(`${API_BASE}/api/addresses`, addressData, { ...getHeaders(token), timeout: 10000 });
-      return res;
+      if (token) {
+        const res = await axios.post(`${API_BASE}/api/addresses`, addressData, { ...getHeaders(token), timeout: 10000 });
+        if (res.data) return res;
+      }
     } catch {
-      const newAddr = { ...addressData, id: Date.now() };
-      return { data: newAddr };
+      // Backend unavailable or error
     }
+    const newAddr = { ...addressData, id: Date.now() };
+    try {
+      const stored = JSON.parse(localStorage.getItem('user_addresses') || '[]');
+      stored.push(newAddr);
+      localStorage.setItem('user_addresses', JSON.stringify(stored));
+    } catch {}
+    return { data: newAddr };
   }
 };
 

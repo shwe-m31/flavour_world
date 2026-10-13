@@ -15,7 +15,7 @@ export const Header = ({ searchQuery, setSearchQuery }) => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   const isDashboard = location.pathname === '/' || location.pathname === '/dashboard';

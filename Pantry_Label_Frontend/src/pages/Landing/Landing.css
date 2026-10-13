@@ -434,7 +434,8 @@
   background: #f9fafb;
   border-radius: 24px;
   padding: 4rem 3rem;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .fw-multilingual-header {
@@ -507,8 +508,8 @@
   background: #ffffff;
   border-radius: 24px;
   padding: 3rem;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e5e7eb;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.03);
+  border: 1.5px solid #d1d5db;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 3rem;
@@ -620,9 +621,10 @@
 
 .fw-regional-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 24px;
   padding: 2.25rem 2rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -677,7 +679,7 @@
 
 .fw-ingredient-pill {
   background: #f9fafb;
-  border: 1px solid #e5e7eb;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   padding: 0.3rem 0.65rem;
   font-size: 0.8rem;
@@ -696,9 +698,10 @@
 
 .fw-audience-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 24px;
   padding: 2.25rem 1.75rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
@@ -749,7 +752,8 @@
   background: #fafaf9;
   border-radius: 24px;
   padding: 5rem 3rem;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
 .fw-category-grid {
@@ -761,9 +765,10 @@
 
 .fw-category-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 20px;
   padding: 1.75rem;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
   transition: all 0.2s ease;
   display: flex;
   flex-direction: column;
@@ -773,7 +778,7 @@
 .fw-category-card:hover {
   border-color: #10b981;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.08);
 }
 
 .fw-category-name {
@@ -791,9 +796,10 @@
 .fw-ingredient-cta-box {
   text-align: center;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 20px;
   padding: 2.5rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   max-width: 600px;
   margin: 0 auto;
 }
@@ -822,9 +828,10 @@
 
 .fw-option-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 24px;
   padding: 2.25rem 2rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   transition: all 0.25s ease;
@@ -877,10 +884,10 @@
    ================================================== */
 .fw-customizer-wrapper {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 24px;
   padding: 3.5rem;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 4rem;
@@ -1156,9 +1163,10 @@
 
 .fw-faq-item {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   transition: all 0.2s ease;
 }
 

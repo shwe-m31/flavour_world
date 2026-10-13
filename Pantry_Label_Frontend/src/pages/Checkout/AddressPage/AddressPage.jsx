@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
 import addressService from '../../../services/addressService';
 import productService from '../../../services/productService';
 import AddressCard from '../../../components/AddressCard/AddressCard';
@@ -29,8 +30,12 @@ export const AddressPage = ({ token, onSelectAddress, selectedAddressId }) => {
         addressService.getAddresses(token),
         productService.getStates()
       ]);
-      setAddresses(addrRes.data || []);
+      const loadedAddrs = addrRes.data || [];
+      setAddresses(loadedAddrs);
       setStates(statesRes.data || []);
+      if (loadedAddrs.length === 0) {
+        setShowForm(true);
+      }
     } catch (err) {
       console.error(err);
       setError('Failed to fetch addresses or states list.');
@@ -119,8 +124,8 @@ export const AddressPage = ({ token, onSelectAddress, selectedAddressId }) => {
 
       <div className="add-address-trigger-area">
         {!showForm ? (
-          <button className="toggle-address-form-btn" onClick={() => setShowForm(true)}>
-            ➕ Add a New Address
+          <button className="toggle-address-form-btn" onClick={() => setShowForm(true)} style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+            <Plus size={16} /> Add a New Address
           </button>
         ) : (
           <div className="new-address-form-container">

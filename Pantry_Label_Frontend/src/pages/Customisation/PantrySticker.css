@@ -154,16 +154,17 @@
 .sticker-corner {
   position: absolute;
   color: var(--sticker-accent);
-  font-size: 13px;
+  font-size: 11px;
   line-height: 1;
   user-select: none;
   pointer-events: none;
   opacity: 0.95;
+  z-index: 3;
 }
-.corner-tl { top: -2px; left: -2px; transform: translate(-30%, -30%); }
-.corner-tr { top: -2px; right: -2px; transform: translate(30%, -30%); }
-.corner-bl { bottom: -2px; left: -2px; transform: translate(-30%, 30%); }
-.corner-br { bottom: -2px; right: -2px; transform: translate(30%, 30%); }
+.corner-tl { top: 2px; left: 2px; }
+.corner-tr { top: 2px; right: 2px; }
+.corner-bl { bottom: 2px; left: 2px; }
+.corner-br { bottom: 2px; right: 2px; }
 
 /* Corner Pips for Minimal Border */
 .sticker-pip {
@@ -172,11 +173,12 @@
   height: 5px;
   background-color: var(--sticker-border);
   pointer-events: none;
+  z-index: 3;
 }
-.pip-tl { top: -3px; left: -3px; }
-.pip-tr { top: -3px; right: -3px; }
-.pip-bl { bottom: -3px; left: -3px; }
-.pip-br { bottom: -3px; right: -3px; }
+.pip-tl { top: 2px; left: 2px; }
+.pip-tr { top: 2px; right: 2px; }
+.pip-bl { bottom: 2px; left: 2px; }
+.pip-br { bottom: 2px; right: 2px; }
 
 /* ============================================================
    STICKER CONTENT FLOW
@@ -184,12 +186,16 @@
 
 .pantry-sticker-content-flow {
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   text-align: center;
+  padding: 2px 6px;
+  overflow: hidden;
 }
 
 /* Top Botanical Line-Art Illustration */
@@ -240,8 +246,10 @@
   line-height: 1.28;
   letter-spacing: normal;
   text-align: center;
-  word-break: break-word;
+  word-break: normal;
   overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: none;
   max-width: 100%;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
   font-family: inherit;
@@ -280,8 +288,10 @@
   text-transform: uppercase;
   line-height: 1.25;
   text-align: center;
-  word-break: break-word;
+  word-break: normal;
   overflow-wrap: break-word;
+  white-space: normal;
+  hyphens: none;
   max-width: 100%;
   opacity: 0.95;
 }

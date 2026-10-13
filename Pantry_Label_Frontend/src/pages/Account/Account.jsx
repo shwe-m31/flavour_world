@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Edit3, Phone, Package, Truck } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import useAuth from '../../hooks/useAuth';
@@ -93,8 +94,8 @@ export const Account = () => {
                   <strong>{userStateName}</strong>
                 </div>
               </div>
-              <Link to="/profile-setup" className="edit-profile-btn">
-                ✏️ Edit Profile Settings
+              <Link to="/profile-setup" className="edit-profile-btn" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                <Edit3 size={15} /> Edit Profile Settings
               </Link>
             </div>
 
@@ -108,7 +109,7 @@ export const Account = () => {
                   {addresses.map(addr => (
                     <div key={addr.id} className="saved-address-item">
                       <strong>{addr.name}</strong>
-                      <span>📞 {addr.phone}</span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><Phone size={13} /> {addr.phone}</span>
                       <p>
                         {addr.flatHouseNo}, {addr.areaStreetName}
                         {addr.landmark && `, Landmark: ${addr.landmark}`}
@@ -129,7 +130,7 @@ export const Account = () => {
               <hr className="account-hr" />
               {orders.length === 0 ? (
                 <div className="empty-orders-view">
-                  <span className="empty-box-icon">📦</span>
+                  <span className="empty-box-icon"><Package size={36} color="#94a3b8" /></span>
                   <p>You haven't ordered any custom labels yet.</p>
                   <Link to="/dashboard" className="start-selection-link">
                     Select Ingredients Now
@@ -162,8 +163,9 @@ export const Account = () => {
                           <Link
                             to={`/order-tracking?orderId=${order.orderId || order.id}`}
                             className="order-history-track-btn"
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
                           >
-                            🚚 Live Tracking
+                            <Truck size={14} /> Live Tracking
                           </Link>
                         </div>
                       </div>

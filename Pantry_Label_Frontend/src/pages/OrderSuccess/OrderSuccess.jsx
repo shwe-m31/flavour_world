@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { Truck } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import InvoiceCard from '../../components/InvoiceCard/InvoiceCard';
@@ -58,8 +59,12 @@ export const OrderSuccess = () => {
         )}
 
         <div className="success-action-dock">
-          <Link to={`/order-tracking?orderId=${orderId}`} className="track-order-link-btn">
-            🚚 Track Order Dispatch
+          <Link
+            to={`/order-tracking?orderId=${orderId}`}
+            className="track-order-link-btn"
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
+          >
+            <Truck size={16} /> Track Order Dispatch
           </Link>
           <Link to="/dashboard" className="back-dashboard-link-btn">
             Back to Dashboard

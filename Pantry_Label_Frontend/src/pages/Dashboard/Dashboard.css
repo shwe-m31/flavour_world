@@ -592,24 +592,131 @@
 }
 
 /* ============================================================
-   GRID LAYOUT (Products + Summary Sidebar)
+   TOP SELECTED INGREDIENTS TRAY (Req 4)
    ============================================================ */
-.dashboard-main-grid-layout {
-  display: grid;
-  grid-template-columns: 1fr 310px;
-  gap: 1.5rem;
-  align-items: flex-start;
-  margin-top: 1.25rem;
+.selected-ingredients-tray {
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-@media (max-width: 1080px) {
-  .dashboard-main-grid-layout {
-    grid-template-columns: 1fr;
-  }
+.tray-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.65rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tray-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.tray-count-text {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #dcfce7;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+}
+
+.tray-capacity-info {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.tray-clear-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  font-size: 0.75rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.tray-clear-btn:hover {
+  color: #ef4444;
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.tray-empty-text {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  font-style: italic;
+  padding: 0.25rem 0;
+}
+
+.tray-chips-scroll {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  max-height: 125px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+
+.selected-tray-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 16px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.76rem;
+  color: #166534;
+  font-weight: 600;
+}
+
+.chip-name {
+  line-height: 1.2;
+}
+
+.chip-remove-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #166534;
+  padding: 2px;
+  border-radius: 50%;
+  line-height: 1;
+  transition: background 0.15s ease;
+}
+
+.chip-remove-btn:hover {
+  background: #bbf7d0;
+  color: #14532d;
+}
+
+/* ============================================================
+   GRID LAYOUT (Products Grid - Full-Width without Sidebar)
+   ============================================================ */
+.dashboard-main-grid-layout {
+  display: block;
+  width: 100%;
+  margin-top: 1.25rem;
 }
 
 .products-grid-column {
   min-width: 0;
+  width: 100%;
 }
 
 .ingredients-grid {
@@ -618,18 +725,47 @@
   gap: 1.25rem;
 }
 
-/* ============================================================
-   RIGHT SUMMARY SIDEBAR (MATCHING IMAGE 3)
-   ============================================================ */
-.selection-summary-sidebar {
-  position: sticky;
-  top: 90px;
+@media (max-width: 640px) {
+  .ingredients-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.65rem;
+  }
+  .dashboard-page-container {
+    padding-bottom: 120px;
+  }
+  .dashboard-content {
+    padding: 0.75rem 0.5rem;
+  }
+  .setup-step-card {
+    padding: 0.85rem 0.65rem;
+    border-radius: 12px;
+  }
+  .ingredients-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .header-actions-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  .dock-container {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  .dock-proceed-btn {
+    width: 100%;
+  }
 }
 
-@media (max-width: 1080px) {
-  .selection-summary-sidebar {
-    display: none; /* Mobile/tablet uses sticky bottom dock */
-  }
+/* ============================================================
+   RIGHT SUMMARY SIDEBAR (REMOVED / PRESERVED AS FALLBACK)
+   ============================================================ */
+.selection-summary-sidebar {
+  display: none;
 }
 
 .summary-sticky-card {
@@ -733,7 +869,9 @@
   position: fixed;
   bottom: 0;
   left: 0;
-  width: 100vw;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);

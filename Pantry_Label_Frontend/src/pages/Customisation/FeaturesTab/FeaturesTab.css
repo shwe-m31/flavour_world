@@ -5,9 +5,50 @@
 .features-tab-container {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   max-width: 860px;
   margin: 0 auto;
+}
+
+/* Horizontal Category Pills Bar (Req 9) */
+.features-category-pills-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding: 0.25rem 0.25rem 0.75rem 0.25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.features-category-pills-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.features-cat-pill {
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1.5px solid #d1d5db;
+  color: #4b5563;
+  padding: 0.55rem 1.15rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.features-cat-pill:hover {
+  border-color: #c59f53;
+  color: #111827;
+  background: #fdfbf7;
+}
+
+.features-cat-pill.active {
+  background: #0f2b23;
+  border-color: #0f2b23;
+  color: #d6b87d;
+  box-shadow: 0 4px 12px rgba(15, 43, 35, 0.2);
 }
 
 /* Customiser Sections */
@@ -547,12 +588,62 @@
 
 @media (max-width: 640px) {
   .customiser-option-section {
-    padding: 1.25rem 1rem;
+    padding: 1rem 0.85rem;
   }
   .theme-palette-grid,
-  .choice-grid,
+  .choice-grid-shapes,
+  .choice-grid-corners,
   .border-choice-grid,
   .typography-choice-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.65rem !important;
+  }
+
+  .theme-card-preview-swatch {
+    height: 60px;
+  }
+
+  .theme-card-name {
+    font-size: 0.78rem;
+  }
+
+  .theme-card-subtitle {
+    font-size: 0.65rem;
+  }
+
+  .choice-card {
+    padding: 0.65rem 0.45rem;
+  }
+
+  .choice-title {
+    font-size: 0.78rem;
+  }
+
+  .choice-description {
+    font-size: 0.65rem;
+  }
+
+  .border-card-btn {
+    padding: 0.65rem 0.45rem;
+  }
+
+  .border-card-title {
+    font-size: 0.78rem;
+  }
+
+  .border-card-desc {
+    font-size: 0.65rem;
+  }
+
+  .typography-card-btn {
+    padding: 0.65rem 0.45rem;
+  }
+
+  .sample-regional-specimen {
+    font-size: 0.85rem;
+  }
+
+  .sample-english-specimen {
+    font-size: 0.6rem;
   }
 }

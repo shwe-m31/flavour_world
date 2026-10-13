@@ -2,13 +2,16 @@
   display: flex;
   gap: 1rem;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 1.5px solid #d1d5db;
   border-radius: 12px;
   padding: 1.25rem;
   cursor: pointer;
   position: relative;
   transition: all 0.2s ease-in-out;
   user-select: none;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .address-card-container:hover {

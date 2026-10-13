@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
   });
 
   const login = async (userData, jwtToken) => {
+    sessionStorage.removeItem('flavour_world_logged_out');
     setToken(jwtToken);
     setUser(userData);
     localStorage.setItem('flavour_world_token', jwtToken);
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem('flavour_world_token');
     localStorage.removeItem('flavour_world_user');
+    sessionStorage.setItem('flavour_world_logged_out', 'true');
   };
 
   const updateProfileStatus = (isCompleted, additionalData = {}) => {

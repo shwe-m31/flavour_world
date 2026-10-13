@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { ShoppingCart, Trash2, Tag, ShieldCheck } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import { CartContext } from '../../context/CartContext';
@@ -65,7 +66,7 @@ export const Cart = () => {
 
         {!loading && cartCount === 0 ? (
           <div className="cart-empty-state">
-            <span className="empty-cart-icon">🛒</span>
+            <span className="empty-cart-icon"><ShoppingCart size={40} color="#94a3b8" /></span>
             <h3>Your cart is empty</h3>
             <p>Go back to the dashboard to select some pantry ingredients.</p>
             <Link to="/dashboard" className="cart-back-dashboard-btn">
@@ -93,7 +94,9 @@ export const Cart = () => {
                         {product.imageUrl ? (
                           <img src={product.imageUrl} alt={product.name} className="cart-item-img" />
                         ) : (
-                          <div className="cart-item-placeholder">🍲</div>
+                          <div className="cart-item-placeholder" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <Tag size={20} color="#94a3b8" />
+                          </div>
                         )}
                       </div>
 
@@ -110,8 +113,9 @@ export const Cart = () => {
                           className="cart-item-delete-btn"
                           onClick={() => handleRemoveItem(cartItemId)}
                           title="Remove item"
+                          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
                         >
-                          🗑️
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </div>
@@ -157,8 +161,8 @@ export const Cart = () => {
                   Proceed to Checkout
                 </button>
 
-                <div className="cart-security-tag">
-                  🔒 Safe and Secure Payments. 100% Satisfaction Guaranteed.
+                <div className="cart-security-tag" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                  <ShieldCheck size={15} /> Safe and Secure Payments. 100% Satisfaction Guaranteed.
                 </div>
               </div>
             </div>

@@ -57,6 +57,31 @@ export const Register = () => {
     return () => clearInterval(intervalId);
   }, [secondsLeft]);
 
+  // Handle browser Back button after logout (Requirement 4)
+  useEffect(() => {
+    const isLoggedOut = sessionStorage.getItem('flavour_world_logged_out') === 'true';
+    if (!isLoggedOut) return;
+
+    const handlePopState = () => {
+      sessionStorage.removeItem('flavour_world_logged_out');
+      navigate('/', { replace: true });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  const handleBackNavigation = () => {
+    if (sessionStorage.getItem('flavour_world_logged_out') === 'true') {
+      sessionStorage.removeItem('flavour_world_logged_out');
+      navigate('/', { replace: true });
+    } else {
+      navigate(-1);
+    }
+  };
+
   // Validation logic for Method 1
   const isUsernameValid = username.trim().length >= 3 && /^[a-zA-Z0-9_]+$/.test(username.trim());
 
@@ -200,7 +225,7 @@ export const Register = () => {
               <button
                 type="button"
                 className="auth-back-nav-btn"
-                onClick={() => navigate(-1)}
+                onClick={handleBackNavigation}
                 title="Return to previous page"
               >
                 <ArrowLeft size={16} />

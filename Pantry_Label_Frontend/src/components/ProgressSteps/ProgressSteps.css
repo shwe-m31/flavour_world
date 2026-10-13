@@ -84,10 +84,23 @@
 }
 
 @media (max-width: 480px) {
+  .progress-steps-container {
+    padding: 0 0.25rem;
+    margin: 1rem auto 1.5rem;
+    box-sizing: border-box;
+  }
+  .step-circle {
+    width: 1.85rem;
+    height: 1.85rem;
+    font-size: 0.78rem;
+  }
   .step-label {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
+    white-space: normal;
+    text-align: center;
   }
   .step-connector {
-    margin: 0 0.5rem;
+    margin: 0 0.25rem;
+    transform: translateY(-0.75rem);
   }
 }

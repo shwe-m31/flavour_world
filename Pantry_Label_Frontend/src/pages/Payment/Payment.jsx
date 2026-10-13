@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import { CreditCard, ShieldCheck } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import useAuth from '../../hooks/useAuth';
@@ -178,7 +179,9 @@ export const Payment = () => {
       <main className="payment-content-area">
         <div className="payment-card-layout">
           <div className="payment-header-block">
-            <span className="payment-header-icon">💳</span>
+            <span className="payment-header-icon" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CreditCard size={28} />
+            </span>
             <h2>Select Payment Method</h2>
             <p className="subtitle">Secure transaction via Razorpay gateway.</p>
           </div>
@@ -214,8 +217,8 @@ export const Payment = () => {
             {paying ? 'Processing...' : `Pay ${currencyFormat(finalAmount || 0)} Now`}
           </button>
 
-          <p className="payment-secure-badge">
-            🔒 SSL Secured | 256-bit Encryption
+          <p className="payment-secure-badge" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+            <ShieldCheck size={14} /> SSL Secured | 256-bit Encryption
           </p>
         </div>
       </main>

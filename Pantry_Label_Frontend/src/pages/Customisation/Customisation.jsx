@@ -104,19 +104,19 @@ export const Customisation = () => {
             className={`tab-toggle-btn ${activeTab === 'features' ? 'active' : ''}`}
             onClick={() => setActiveTab('features')}
           >
-            🎨 Design Layout
+            Design Layout
           </button>
           <button
             className={`tab-toggle-btn ${activeTab === 'preview' ? 'active' : ''}`}
             onClick={() => setActiveTab('preview')}
           >
-            👁️ Live Preview
+            Live Preview
           </button>
           <button
             className={`tab-toggle-btn ${activeTab === 'summary' ? 'active' : ''}`}
             onClick={() => setActiveTab('summary')}
           >
-            📝 Order Summary
+            Order Summary
           </button>
         </div>
 

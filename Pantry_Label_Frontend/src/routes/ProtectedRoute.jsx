@@ -12,6 +12,10 @@ export const ProtectedRoute = ({ children, requiresProfileCompleted = true }) =>
   // So we proceed to check authentication directly.
   
   if (!isAuthenticated) {
+    if (sessionStorage.getItem('flavour_world_logged_out') === 'true') {
+      sessionStorage.removeItem('flavour_world_logged_out');
+      return <Navigate to="/" replace />;
+    }
     // Redirect to login, saving the original location they tried to reach
     return <Navigate to="/login" state={{ from: location }} replace />;
   }

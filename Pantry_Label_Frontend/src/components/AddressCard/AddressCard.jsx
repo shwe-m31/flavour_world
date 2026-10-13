@@ -1,4 +1,5 @@
 import React from 'react';
+import { Phone } from 'lucide-react';
 import './AddressCard.css';
 
 export const AddressCard = ({ address, isSelected, onSelect }) => {
@@ -48,7 +49,7 @@ export const AddressCard = ({ address, isSelected, onSelect }) => {
           <strong className="address-recipient-name">{name}</strong>
           {isSelected && <span className="default-badge">Deliver Here</span>}
         </div>
-        <p className="address-phone-line">📞 {phone}</p>
+        <p className="address-phone-line"><Phone size={13} style={{ verticalAlign: 'middle', marginRight: '6px', color: '#6b7280' }} />{phone}</p>
         <p className="address-text-line">
           {flatHouseNo}, {areaStreetName}
           {landmark && <span className="landmark-span"><br />Landmark: {landmark}</span>}

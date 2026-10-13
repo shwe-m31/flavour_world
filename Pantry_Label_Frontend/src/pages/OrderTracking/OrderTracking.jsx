@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { AlertCircle } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import useAuth from '../../hooks/useAuth';
@@ -120,7 +121,7 @@ export const OrderTracking = () => {
 
           {order.status === 'PENDING_PAYMENT' ? (
             <div className="pending-payment-warning-box">
-              <h4>⚠️ Payment is Pending</h4>
+              <h4 style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><AlertCircle size={18} /> Payment is Pending</h4>
               <p>This order has been created but payment is not verified. Please complete payment to send labels to print.</p>
               <Link to={`/payment?orderId=${orderId}`} className="complete-payment-direct-btn">
                 Complete Razorpay Payment

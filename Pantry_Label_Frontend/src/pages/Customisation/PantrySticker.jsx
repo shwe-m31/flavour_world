@@ -63,21 +63,39 @@ export const PantrySticker = ({
     return cleaned || englishName;
   }, [product, language, englishName]);
 
-  // Calculate responsive typography scaling for regional names (supports Indian script combining marks)
+  // Calculate adaptive typography scaling based on shape, word length, and total character length
   const regionalFontSize = useMemo(() => {
-    const len = regionalName.length;
-    if (len > 24) return 'clamp(0.95rem, 1.35vw, 1.15rem)';
-    if (len > 18) return 'clamp(1.1rem, 1.6vw, 1.35rem)';
-    if (len > 12) return 'clamp(1.25rem, 1.9vw, 1.55rem)';
-    return 'clamp(1.4rem, 2.2vw, 1.75rem)';
-  }, [regionalName]);
+    const words = String(regionalName).split(/\s+/);
+    const maxWordLen = Math.max(...words.map((w) => w.length));
+    const totalLen = regionalName.length;
+    const isRect = shape.id === 'rectangle';
+
+    if (maxWordLen >= 14 || totalLen >= 26) {
+      return isRect ? 'clamp(0.85rem, 1.15vw, 1.02rem)' : 'clamp(0.95rem, 1.35vw, 1.15rem)';
+    }
+    if (maxWordLen >= 10 || totalLen >= 18) {
+      return isRect ? 'clamp(0.95rem, 1.3vw, 1.15rem)' : 'clamp(1.1rem, 1.55vw, 1.35rem)';
+    }
+    if (maxWordLen >= 7 || totalLen >= 12) {
+      return isRect ? 'clamp(1.08rem, 1.55vw, 1.28rem)' : 'clamp(1.25rem, 1.85vw, 1.52rem)';
+    }
+    return isRect ? 'clamp(1.22rem, 1.8vw, 1.45rem)' : 'clamp(1.4rem, 2.15vw, 1.72rem)';
+  }, [regionalName, shape.id]);
 
   const englishFontSize = useMemo(() => {
-    const len = englishName.length;
-    if (len > 24) return 'clamp(0.65rem, 0.8vw, 0.75rem)';
-    if (len > 16) return 'clamp(0.72rem, 0.95vw, 0.82rem)';
-    return 'clamp(0.8rem, 1.1vw, 0.92rem)';
-  }, [englishName]);
+    const words = String(englishName).split(/\s+/);
+    const maxWordLen = Math.max(...words.map((w) => w.length));
+    const totalLen = englishName.length;
+    const isRect = shape.id === 'rectangle';
+
+    if (maxWordLen >= 14 || totalLen >= 24) {
+      return isRect ? 'clamp(0.58rem, 0.72vw, 0.68rem)' : 'clamp(0.65rem, 0.8vw, 0.74rem)';
+    }
+    if (maxWordLen >= 10 || totalLen >= 16) {
+      return isRect ? 'clamp(0.65rem, 0.82vw, 0.74rem)' : 'clamp(0.72rem, 0.9vw, 0.82rem)';
+    }
+    return isRect ? 'clamp(0.72rem, 0.92vw, 0.82rem)' : 'clamp(0.8rem, 1.05vw, 0.9rem)';
+  }, [englishName, shape.id]);
 
   const cornerRadius = shape.id === 'square' ? corner.radiusSquare : corner.radiusRectangle;
 
@@ -148,7 +166,7 @@ export const PantrySticker = ({
               <div className="pantry-sticker-heading-block">
                 <h2
                   className="pantry-sticker-regional-title"
-                  style={{ fontSize: regionalFontSize }}
+                  style={{ fontSize: `calc(${regionalFontSize} * var(--sticker-scale, 1))` }}
                   title={regionalName}
                 >
                   {regionalName}
@@ -164,7 +182,7 @@ export const PantrySticker = ({
                 {/* Subtitle: Smaller Legible English Name */}
                 <span
                   className="pantry-sticker-english-title"
-                  style={{ fontSize: englishFontSize }}
+                  style={{ fontSize: `calc(${englishFontSize} * var(--sticker-scale, 1))` }}
                   title={englishName}
                 >
                   {englishName}

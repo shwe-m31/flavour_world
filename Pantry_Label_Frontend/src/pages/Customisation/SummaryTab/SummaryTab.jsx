@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ShoppingCart, Zap } from 'lucide-react';
 import { CustomisationContext } from '../../../context/CustomisationContext';
 import { CartContext } from '../../../context/CartContext';
 import useAuth from '../../../hooks/useAuth';
+import { getIndianStateById } from '../../../data/indianStates';
 import {
   getThemeById,
   getShapeById,
@@ -16,6 +18,10 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
   const { token } = useAuth();
   const navigate = useNavigate();
   const {
+    consumerCategory,
+    selectedStateId,
+    cookingPreference,
+    sheetQuantity,
     selectedTheme,
     selectedShape,
     selectedCorner,
@@ -32,10 +38,14 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const stateObj = getIndianStateById(selectedStateId);
   const themeObj = getThemeById(selectedTheme);
   const shapeObj = getShapeById(selectedShape);
   const cornerObj = getCornerById(selectedCorner);
   const borderObj = getBorderById(selectedBorderStyle);
+
+  const capacityPerSheet = selectedShape === 'square' ? 35 : 40;
+  const sheetCount = Math.max(1, Math.ceil((sheetQuantity || 35) / capacityPerSheet));
 
   const handleAction = async (actionType) => {
     setLoading(true);
@@ -85,6 +95,22 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
 
         <div className="summary-specs-list">
           <div className="spec-row">
+            <span>Kitchen Persona:</span>
+            <strong>{consumerCategory || 'Standard Household'}</strong>
+          </div>
+          <div className="spec-row">
+            <span>Region / State:</span>
+            <strong>{stateObj?.name || 'Tamil Nadu'}</strong>
+          </div>
+          <div className="spec-row">
+            <span>Cooking Preference:</span>
+            <strong>{cookingPreference || 'Vegetarian'}</strong>
+          </div>
+          <div className="spec-row">
+            <span>Sheet Capacity:</span>
+            <strong>{sheetQuantity} Containers ({selectedShape === 'square' ? '5×7 Sheet • 35/sheet' : '5×8 Sheet • 40/sheet'}, {sheetCount} Sheet{sheetCount > 1 ? 's' : ''})</strong>
+          </div>
+          <div className="spec-row">
             <span>Sticker Palette:</span>
             <strong>{themeObj?.name || selectedBackground}</strong>
           </div>
@@ -102,15 +128,15 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
           </div>
           <div className="spec-row">
             <span>Primary Script:</span>
-            <strong style={{ textTransform: 'capitalize' }}>{selectedLanguage || 'Tamil'}</strong>
+            <strong style={{ textTransform: 'capitalize' }}>{selectedLanguage || 'Tamil'} + English</strong>
           </div>
           <div className="spec-row">
             <span>Ingredient Artwork:</span>
             <strong>{showIllustration ? 'Botanical Line Art' : 'Text-Only'}</strong>
           </div>
           <div className="spec-row">
-            <span>Total Stickers:</span>
-            <strong>{selectedProducts.length} labels</strong>
+            <span>Selected Stickers:</span>
+            <strong>{selectedProducts.length} labels (₹2.00 / sticker)</strong>
           </div>
         </div>
 
@@ -140,7 +166,7 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
         <hr className="summary-hr" />
 
         <div className="summary-price-dock">
-          <span className="price-label">Estimated Label Cost (Rs. 2 / label):</span>
+          <span className="price-label">Estimated Label Cost (₹2.00 / label):</span>
           <span className="price-value">{formattedEstimate}</span>
         </div>
 
@@ -159,15 +185,19 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
             onClick={() => handleAction('addToCart')}
             className="summary-btn btn-cart"
             disabled={loading}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            🛒 Add to Cart
+            <ShoppingCart size={16} />
+            <span>Add to Cart</span>
           </button>
           <button
             onClick={() => handleAction('buyNow')}
             className="summary-btn btn-buynow"
             disabled={loading}
+            style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}
           >
-            🔥 Buy Now
+            <Zap size={16} />
+            <span>Buy Now</span>
           </button>
         </div>
       </div>

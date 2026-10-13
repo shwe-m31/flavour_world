@@ -1,29 +1,29 @@
 .ingredient-card {
   position: relative;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 16px;
-  padding: 1.25rem;
+  border: 1.5px solid #d1d5db;
+  border-radius: 14px;
+  padding: 1.15rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   cursor: pointer;
   user-select: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .ingredient-card:hover {
-  transform: translateY(-4px);
-  border-color: #10b981;
-  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.1), 0 4px 6px -2px rgba(16, 185, 129, 0.05);
+  transform: translateY(-3px);
+  border-color: #15803d;
+  box-shadow: 0 8px 18px rgba(21, 128, 61, 0.12);
 }
 
 .ingredient-card.selected {
-  border-color: #10b981;
-  background: rgba(16, 185, 129, 0.02);
-  box-shadow: 0 0 0 2px #10b981, 0 10px 15px -3px rgba(16, 185, 129, 0.1);
+  border: 2px solid #15803d;
+  background-color: #f0fdf4;
+  box-shadow: 0 0 0 1px #15803d, 0 6px 16px rgba(21, 128, 61, 0.15);
 }
 
 /* Checkbox overlay styling */
@@ -158,4 +158,28 @@
   font-size: 0.9rem;
   font-weight: 700;
   color: #10b981;
+}
+
+@media (max-width: 640px) {
+  .ingredient-card {
+    padding: 0.75rem 0.5rem;
+    border-radius: 12px;
+  }
+  .ingredient-image-container {
+    width: 68px;
+    height: 68px;
+    margin-bottom: 0.5rem;
+  }
+  .name-block {
+    min-height: 42px;
+  }
+  .ingredient-name {
+    font-size: 0.85rem;
+  }
+  .ingredient-name--translated {
+    font-size: 0.88rem;
+  }
+  .ingredient-english-name {
+    font-size: 0.68rem;
+  }
 }

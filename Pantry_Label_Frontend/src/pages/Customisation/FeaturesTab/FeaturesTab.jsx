@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { CustomisationContext } from '../../../context/CustomisationContext';
 import {
   STICKER_THEMES,
@@ -9,7 +9,16 @@ import {
 } from '../labelCustomisationData';
 import './FeaturesTab.css';
 
+const FEATURE_CATEGORIES = [
+  { id: 'palette', label: 'Palette' },
+  { id: 'shape', label: 'Shape & Finish' },
+  { id: 'border', label: 'Border Style' },
+  { id: 'typography', label: 'Typography' },
+  { id: 'artwork', label: 'Artwork' }
+];
+
 export const FeaturesTab = ({ onNext, onBack }) => {
+  const [activeCategory, setActiveCategory] = useState('palette');
   const {
     selectedTheme,
     setSelectedTheme,
@@ -27,7 +36,25 @@ export const FeaturesTab = ({ onNext, onBack }) => {
 
   return (
     <div className="features-tab-container">
+      {/* Horizontal Category Filter Pills Bar (Req 9) */}
+      <div className="features-category-pills-bar">
+        {FEATURE_CATEGORIES.map((cat) => {
+          const isActive = activeCategory === cat.id;
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              className={`features-cat-pill ${isActive ? 'active' : ''}`}
+              onClick={() => setActiveCategory(cat.id)}
+            >
+              {cat.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* 1. Sticker Themes & Color Palettes */}
+      {activeCategory === 'palette' && (
       <section className="customiser-option-section">
         <div className="section-header">
           <div className="section-title-wrap">
@@ -82,85 +109,90 @@ export const FeaturesTab = ({ onNext, onBack }) => {
           })}
         </div>
       </section>
+      )}
 
-      {/* 2. Shape & Proportions */}
-      <section className="customiser-option-section">
-        <div className="section-header">
-          <div className="section-title-wrap">
-            <span className="section-step-badge">2</span>
-            <div>
-              <h3>Label Shape & Proportions</h3>
-              <p className="section-desc">
-                Choose the physical aspect ratio suited for your jars, tins, and containers.
-              </p>
+      {/* 2. Shape & Finish (Shape & Corner Finish) */}
+      {activeCategory === 'shape' && (
+        <>
+          <section className="customiser-option-section">
+            <div className="section-header">
+              <div className="section-title-wrap">
+                <span className="section-step-badge">2</span>
+                <div>
+                  <h3>Label Shape & Proportions</h3>
+                  <p className="section-desc">
+                    Choose the physical aspect ratio suited for your jars, tins, and containers.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        <div className="choice-grid choice-grid-shapes">
-          {STICKER_SHAPES.map((shape) => {
-            const isActive = selectedShape === shape.id;
-            return (
-              <button
-                key={shape.id}
-                type="button"
-                className={`choice-card shape-choice ${isActive ? 'active' : ''}`}
-                onClick={() => setSelectedShape(shape.id)}
-                aria-pressed={isActive}
-              >
-                <div className="shape-preview-box">
-                  <div className={`shape-silhouette silhouette-${shape.id} corner-${selectedCorner}`} />
-                  <span className="shape-ratio-pill">{shape.aspectLabel}</span>
-                </div>
-                <div className="choice-card-text">
-                  <strong className="choice-title">{shape.name}</strong>
-                  <span className="choice-description">{shape.description}</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* 3. Corner Treatment */}
-      <section className="customiser-option-section">
-        <div className="section-header">
-          <div className="section-title-wrap">
-            <span className="section-step-badge">3</span>
-            <div>
-              <h3>Corner Finish</h3>
-              <p className="section-desc">
-                Select clean 90° straight cut edges or smooth die-cut rounded corners.
-              </p>
+            <div className="choice-grid choice-grid-shapes">
+              {STICKER_SHAPES.map((shape) => {
+                const isActive = selectedShape === shape.id;
+                return (
+                  <button
+                    key={shape.id}
+                    type="button"
+                    className={`choice-card shape-choice ${isActive ? 'active' : ''}`}
+                    onClick={() => setSelectedShape(shape.id)}
+                    aria-pressed={isActive}
+                  >
+                    <div className="shape-preview-box">
+                      <div className={`shape-silhouette silhouette-${shape.id} corner-${selectedCorner}`} />
+                      <span className="shape-ratio-pill">{shape.aspectLabel}</span>
+                    </div>
+                    <div className="choice-card-text">
+                      <strong className="choice-title">{shape.name}</strong>
+                      <span className="choice-description">{shape.description}</span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-          </div>
-        </div>
+          </section>
 
-        <div className="choice-grid choice-grid-corners">
-          {CORNER_STYLES.map((corner) => {
-            const isActive = selectedCorner === corner.id;
-            return (
-              <button
-                key={corner.id}
-                type="button"
-                className={`choice-card corner-choice ${isActive ? 'active' : ''}`}
-                onClick={() => setSelectedCorner(corner.id)}
-                aria-pressed={isActive}
-              >
-                <div className="corner-preview-box">
-                  <div className={`corner-sample-icon corner-style-${corner.id}`} />
+          <section className="customiser-option-section">
+            <div className="section-header">
+              <div className="section-title-wrap">
+                <span className="section-step-badge">3</span>
+                <div>
+                  <h3>Corner Finish</h3>
+                  <p className="section-desc">
+                    Select clean 90° straight cut edges or smooth die-cut rounded corners.
+                  </p>
                 </div>
-                <div className="choice-card-text">
-                  <strong className="choice-title">{corner.name}</strong>
-                  <span className="choice-description">{corner.description}</span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
+              </div>
+            </div>
+
+            <div className="choice-grid choice-grid-corners">
+              {CORNER_STYLES.map((corner) => {
+                const isActive = selectedCorner === corner.id;
+                return (
+                  <button
+                    key={corner.id}
+                    type="button"
+                    className={`choice-card corner-choice ${isActive ? 'active' : ''}`}
+                    onClick={() => setSelectedCorner(corner.id)}
+                    aria-pressed={isActive}
+                  >
+                    <div className="corner-preview-box">
+                      <div className={`corner-sample-icon corner-style-${corner.id}`} />
+                    </div>
+                    <div className="choice-card-text">
+                      <strong className="choice-title">{corner.name}</strong>
+                      <span className="choice-description">{corner.description}</span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        </>
+      )}
 
       {/* 4. Decorative Border Styles */}
+      {activeCategory === 'border' && (
       <section className="customiser-option-section">
         <div className="section-header">
           <div className="section-title-wrap">
@@ -198,8 +230,10 @@ export const FeaturesTab = ({ onNext, onBack }) => {
           })}
         </div>
       </section>
+      )}
 
       {/* 5. Typography Font */}
+      {activeCategory === 'typography' && (
       <section className="customiser-option-section">
         <div className="section-header">
           <div className="section-title-wrap">
@@ -238,8 +272,10 @@ export const FeaturesTab = ({ onNext, onBack }) => {
           })}
         </div>
       </section>
+      )}
 
       {/* 6. Ingredient Artwork Toggle */}
+      {activeCategory === 'artwork' && (
       <section className="customiser-option-section">
         <div className="section-header illustration-toggle-row">
           <div className="section-title-wrap">
@@ -267,6 +303,7 @@ export const FeaturesTab = ({ onNext, onBack }) => {
           </label>
         </div>
       </section>
+      )}
 
       {/* Bottom Step Navigation Bar */}
       <div className="tab-bottom-nav-bar">

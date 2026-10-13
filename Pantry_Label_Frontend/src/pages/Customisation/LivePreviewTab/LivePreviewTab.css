@@ -184,18 +184,26 @@
   width: 100%;
   background: #ebe7de;
   border-radius: 16px;
-  padding: 2rem 1.25rem;
+  padding: 1.5rem 0.5rem;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
-  overflow-x: auto;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.sheet-scale-wrapper {
+  display: flex;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .sheet-paper-container {
   width: 100%;
   background: #ffffff;
   border-radius: 6px;
-  padding: 1.75rem;
+  padding: 1.5rem;
   box-shadow:
     0 1px 3px rgba(0, 0, 0, 0.08),
     0 20px 40px -10px rgba(0, 0, 0, 0.2);
@@ -212,7 +220,14 @@
 }
 
 .sheet-paper-container.sheet-orientation-landscape {
-  max-width: 980px;
+  width: 990px;
+  height: 700px;
+  max-width: 990px;
+  box-sizing: border-box;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .sheet-header-meta {
@@ -295,6 +310,15 @@
   border-radius: 4px;
 }
 
+.sheet-stickers-cutting-grid.grid-shape-rectangle {
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 5px;
+  padding: 8px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
 /* Individual Cell in the Sheet */
 .sheet-sticker-cell {
   position: relative;
@@ -327,6 +351,8 @@
 
 .sheet-sticker-cell.shape-rectangle {
   aspect-ratio: 1.4 / 1;
+  padding: 2px 4px;
+  box-sizing: border-box;
 }
 
 .sheet-cell-cut-frame {
@@ -358,47 +384,62 @@
   max-width: 100% !important;
   max-height: 100% !important;
   box-shadow: none !important;
+  --sticker-scale: 0.62;
 }
 
 .sheet-mini-sticker .pantry-sticker-surface {
-  padding: 6px !important;
+  padding: 5px !important;
   box-shadow: none !important;
 }
 
-.sheet-mini-sticker .pantry-sticker-inner-border {
-  padding: 4px 6px !important;
+.sheet-mini-sticker .pantry-sticker-outer-frame {
+  padding: 2px !important;
 }
 
+.sheet-mini-sticker .pantry-sticker-inner-border {
+  padding: 3px 5px !important;
+}
+
+.sheet-mini-sticker .sticker-corner {
+  font-size: 8px !important;
+  top: 1px !important;
+  left: 1px !important;
+}
+.sheet-mini-sticker .corner-tr { top: 1px !important; right: 1px !important; }
+.sheet-mini-sticker .corner-bl { bottom: 1px !important; left: 1px !important; }
+.sheet-mini-sticker .corner-br { bottom: 1px !important; right: 1px !important; }
+
 .sheet-mini-sticker .pantry-sticker-illustration-row {
-  gap: 4px !important;
+  gap: 3px !important;
 }
 
 .sheet-mini-sticker .flourish-line {
-  max-width: 18px !important;
+  max-width: 16px !important;
 }
 
 .sheet-mini-sticker .illustration-holder svg {
-  width: 18px !important;
-  height: 18px !important;
+  width: 15px !important;
+  height: 15px !important;
 }
 
 .sheet-mini-sticker .pantry-sticker-regional-title {
-  font-size: clamp(0.72rem, 1.2vw, 0.95rem) !important;
   line-height: 1.18 !important;
+  padding: 1px 2px !important;
 }
 
 .sheet-mini-sticker .pantry-sticker-divider {
   margin: 1px 0 !important;
-  width: 50% !important;
+  width: 45% !important;
 }
 
 .sheet-mini-sticker .divider-floret {
-  font-size: 6px !important;
+  font-size: 5px !important;
 }
 
 .sheet-mini-sticker .pantry-sticker-english-title {
-  font-size: clamp(0.5rem, 0.8vw, 0.65rem) !important;
-  letter-spacing: 0.08em !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.15 !important;
+  padding: 0 2px !important;
 }
 
 /* Empty Die-Cut Slot Placeholder */
@@ -620,3 +661,21 @@
   color: #6b7280;
   margin: 0;
 }
+
+@media (max-width: 640px) {
+  .live-preview-tab-container {
+    padding: 1rem 0.5rem;
+    border-radius: 12px;
+  }
+  .preview-toolbar-row {
+    padding-bottom: 0.75rem;
+  }
+  .active-item-title {
+    font-size: 1rem;
+  }
+  .sheet-preview-viewport {
+    padding: 0.75rem 0.25rem;
+    border-radius: 10px;
+  }
+}
+
