@@ -8,13 +8,13 @@ export const StatusBadge = ({ status }) => {
   let variant = 'neutral';
 
   // Payment & general operational statuses
-  if (['paid', 'completed', 'active', 'delivered', 'generated', 'success'].includes(normalized)) {
+  if (['paid', 'completed', 'active', 'delivered', 'generated', 'success', 'live customer', 'live order', 'live'].includes(normalized)) {
     variant = 'success';
   } else if (['pending', 'processing', 'draft', 'viewed'].includes(normalized)) {
     variant = 'warning';
   } else if (['failed', 'cancelled', 'deactivated', 'disabled', 'critical'].includes(normalized)) {
     variant = 'danger';
-  } else if (['confirmed', 'shipped', 'dispatched', 'in transit', 'info'].includes(normalized)) {
+  } else if (['confirmed', 'shipped', 'dispatched', 'in transit', 'info', 'demo user', 'demo order', 'demo'].includes(normalized)) {
     variant = 'info';
   }
 

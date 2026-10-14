@@ -42,6 +42,27 @@ export const Login = () => {
     }
   }, [isAuthenticated, user, navigate]);
 
+  // Handle browser Back button after logout (Requirement 2 & 4)
+  useEffect(() => {
+    const isLoggedOut = sessionStorage.getItem('flavour_world_logged_out') === 'true';
+    if (!isLoggedOut) return;
+
+    const handlePopState = () => {
+      sessionStorage.removeItem('flavour_world_logged_out');
+      navigate('/', { replace: true });
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [navigate]);
+
+  const handleBackNavigation = () => {
+    sessionStorage.removeItem('flavour_world_logged_out');
+    navigate('/');
+  };
+
   // Handle OTP countdown timer
   useEffect(() => {
     let intervalId;
@@ -190,8 +211,8 @@ export const Login = () => {
               <button
                 type="button"
                 className="auth-back-nav-btn"
-                onClick={() => navigate(-1)}
-                title="Return to previous page"
+                onClick={handleBackNavigation}
+                title="Return to Landing page"
               >
                 <ArrowLeft size={16} />
                 <span>Back</span>

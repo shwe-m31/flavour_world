@@ -48,8 +48,12 @@ export const PantrySticker = ({
     if (!text && langKey === 'tamil') {
       text = product.tamil || product.tamilName || product.bilingualName;
     }
+    // Never fall back to Tamil for non-Tamil languages
+    if (!text && langKey !== 'tamil') {
+      text = product.englishName || product.name;
+    }
     if (!text) {
-      text = product.bilingualName || product.name;
+      text = product.name;
     }
 
     // Clean CID and corruption artifacts

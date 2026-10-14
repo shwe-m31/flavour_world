@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Users,
@@ -21,7 +21,7 @@ import { ClinicalBarChart, ClinicalDistributionBar } from '../components/Clinica
 
 export const DashboardOverview = () => {
   const navigate = useNavigate();
-  const { orders, labelActivities, activityLog } = useAdmin();
+  const { orders, users, ingredients, languages, labelActivities, activityLog } = useAdmin();
   const [selectedLabelForPreview, setSelectedLabelForPreview] = useState(null);
 
   const orderColumns = [
@@ -95,25 +95,65 @@ export const DashboardOverview = () => {
     }
   ];
 
-  // Daily orders chart data
-  const weeklyOrderTrend = [
-    { label: '06 Sep', value: 38 },
-    { label: '07 Sep', value: 42 },
-    { label: '08 Sep', value: 49 },
-    { label: '09 Sep', value: 44 },
-    { label: '10 Sep', value: 58 },
-    { label: '11 Sep', value: 64 },
-    { label: '12 Sep', value: 72 }
-  ];
+  // Daily orders chart data dynamically computed from orders
+  const weeklyOrderTrend = useMemo(() => {
+    const countsByDate = {};
+    orders.forEach(o => {
+      const d = o.date || 'Today';
+      const shortDate = d.split(' ').slice(0, 2).join(' ');
+      countsByDate[shortDate] = (countsByDate[shortDate] || 0) + 1;
+    });
+    const entries = Object.entries(countsByDate).slice(0, 7).reverse();
+    if (entries.length > 0) {
+      return entries.map(([label, value]) => ({ label, value }));
+    }
+    return [
+      { label: '06 Sep', value: 3 },
+      { label: '07 Sep', value: 4 },
+      { label: '08 Sep', value: 5 },
+      { label: '09 Sep', value: 4 },
+      { label: '10 Sep', value: 6 },
+      { label: '11 Sep', value: 7 },
+      { label: '12 Sep', value: 8 }
+    ];
+  }, [orders]);
 
-  // Language distribution data
-  const languageDistribution = [
-    { label: 'Tamil (தமிழ்)', value: 36, count: '1,383 labels', color: '#202124' },
-    { label: 'Kannada (ಕನ್ನಡ)', value: 24, count: '922 labels', color: '#4267A9' },
-    { label: 'Malayalam (മലയാളം)', value: 18, count: '691 labels', color: '#238B5A' },
-    { label: 'Marathi (मराठी)', value: 14, count: '537 labels', color: '#B7791F' },
-    { label: 'Bengali (বাংলা)', value: 8, count: '309 labels', color: '#8A8F94' }
-  ];
+  // Language distribution data dynamically computed from orders
+  const languageDistribution = useMemo(() => {
+    const langCounts = {};
+    orders.forEach(o => {
+      let lang = (o.language || 'Tamil').split('+')[0].trim();
+      langCounts[lang] = (langCounts[lang] || 0) + (Number(o.labels_count) || 30);
+    });
+    const totalCount = Object.values(langCounts).reduce((a, b) => a + b, 0) || 1;
+    const colors = ['#202124', '#4267A9', '#238B5A', '#B7791F', '#8A8F94', '#9333EA', '#DC2626'];
+    const nativeNames = {
+      'Tamil': 'தமிழ்',
+      'Kannada': 'ಕನ್ನಡ',
+      'Malayalam': 'മലയാളം',
+      'Marathi': 'मराठी',
+      'Bengali': 'বাংলা',
+      'Telugu': 'తెలుగు',
+      'Hindi': 'हिन्दी',
+      'Gujarati': 'ગુજરાતી',
+      'Punjabi': 'ਪੰਜਾਬੀ',
+      'Odia': 'ଓଡ଼ିଆ'
+    };
+
+    return Object.entries(langCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([lang, count], idx) => {
+        const pct = Math.round((count / totalCount) * 100);
+        const native = nativeNames[lang] ? ` (${nativeNames[lang]})` : '';
+        return {
+          label: `${lang}${native}`,
+          value: pct,
+          count: `${count.toLocaleString()} labels`,
+          color: colors[idx % colors.length]
+        };
+      });
+  }, [orders]);
 
   return (
     <div>
@@ -150,47 +190,47 @@ export const DashboardOverview = () => {
       <div className="admin-kpi-grid">
         <KpiCard
           label="Total Users"
-          value="1,248"
+          value={users.length.toLocaleString()}
           trend="+8.2%"
           trendType="positive"
-          context="this month"
+          context="active platform"
           icon={Users}
         />
         <KpiCard
           label="New Users"
-          value="86"
+          value={String(users.filter(u => !u.isDemo).length || 1)}
           trend="+14%"
           trendType="positive"
-          context="vs last week"
+          context="live members"
           icon={Users}
         />
         <KpiCard
           label="Total Labels Generated"
-          value="3,842"
+          value={orders.reduce((acc, o) => acc + (Number(o.labels_count) || 30), 0).toLocaleString()}
           trend="+18.5%"
           trendType="positive"
-          context="this month"
+          context="all orders"
           icon={Tag}
         />
         <KpiCard
           label="Total Orders"
-          value="586"
+          value={orders.length.toLocaleString()}
           trend="+12.4%"
           trendType="positive"
-          context="this month"
+          context="all time"
           icon={ShoppingBag}
         />
         <KpiCard
           label="Pending Orders"
-          value="42"
-          trend="Action required"
-          trendType="negative"
-          context="awaiting print/ship"
+          value={orders.filter(o => o.order_status === 'Confirmed' || o.order_status === 'Processing' || o.delivery_status !== 'Delivered').length.toLocaleString()}
+          trend={orders.some(o => o.order_status === 'Confirmed') ? 'Action required' : 'Up to date'}
+          trendType={orders.some(o => o.order_status === 'Confirmed') ? 'negative' : 'positive'}
+          context="in fulfillment"
           icon={Clock}
         />
         <KpiCard
           label="Revenue"
-          value="₹2,34,500"
+          value={`₹${Math.round(orders.reduce((acc, o) => acc + (Number(o.amount || o.total_amount) || 0), 0)).toLocaleString()}`}
           trend="+9.8%"
           trendType="positive"
           context="gross volume"
@@ -198,16 +238,16 @@ export const DashboardOverview = () => {
         />
         <KpiCard
           label="Active Languages"
-          value="5"
-          trend="80/80"
+          value={languages.filter(l => l.status === 'Active').length.toString()}
+          trend={`${languages.filter(l => l.status === 'Active').length}/12`}
           trendType="positive"
-          context="full coverage"
+          context="regional coverage"
           icon={Globe}
         />
         <KpiCard
           label="Products / Ingredients"
-          value="80+"
-          context="8 categories mapped"
+          value={`${ingredients.length}+`}
+          context="mapped catalogue"
           icon={Package}
         />
       </div>

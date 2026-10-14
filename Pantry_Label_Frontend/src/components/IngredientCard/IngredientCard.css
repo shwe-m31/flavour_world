@@ -183,3 +183,19 @@
     font-size: 0.68rem;
   }
 }
+
+@media (max-width: 300px) {
+  .ingredient-card {
+    padding: 0.65rem 0.4rem;
+  }
+  .ingredient-image-container {
+    width: 58px;
+    height: 58px;
+  }
+  .ingredient-name--translated {
+    font-size: 0.82rem;
+  }
+  .ingredient-english-name {
+    font-size: 0.65rem;
+  }
+}

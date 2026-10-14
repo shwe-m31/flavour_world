@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import useAuth from '../../hooks/useAuth';
 import profileService from '../../services/profileService';
-import productService from '../../services/productService';
 import Loader from '../../components/Loader/Loader';
 import './ProfileSetup.css';
 
@@ -14,29 +13,11 @@ export const ProfileSetup = () => {
   const [name, setName] = useState('');
   const [gender, setGender] = useState('');
   const [age, setAge] = useState('');
-  const [kitchenType, setKitchenType] = useState('');
-  const [stateId, setStateId] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
 
-  const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [statesLoading, setStatesLoading] = useState(true);
   const [error, setError] = useState('');
-
-  // Fetch states list on load
-  useEffect(() => {
-    const fetchStates = async () => {
-      try {
-        const response = await productService.getStates();
-        setStates(response.data || []);
-      } catch (err) {
-        console.error('Failed to fetch states list:', err);
-        setError('Could not load states list. Please try reloading.');
-      } finally {
-        setStatesLoading(false);
-      }
-    };
-    fetchStates();
-  }, []);
 
   // Pre-fill profile if it is already partially completed or we have user info
   useEffect(() => {
@@ -44,30 +25,40 @@ export const ProfileSetup = () => {
       if (user.name) setName(user.name);
       if (user.gender) setGender(user.gender);
       if (user.age) setAge(user.age);
-      if (user.kitchenType) setKitchenType(user.kitchenType);
-      if (user.stateId) setStateId(user.stateId);
+      if (user.phone) setPhone(user.phone);
+      if (user.address) setAddress(user.address);
     }
   }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !gender || !age || !kitchenType || !stateId) {
+    if (!name || !gender || !age || !phone || !address) {
       setError('Please complete all form fields.');
+      return;
+    }
+
+    // Validate phone number: 10 Indian digits starting with 6-9
+    const cleanPhone = phone.replace(/^\+91/, '').replace(/\D/g, '');
+    if (!cleanPhone || cleanPhone.length !== 10 || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setError('Please enter a valid 10-digit Indian phone number.');
+      return;
+    }
+    const formattedPhone = `+91 ${cleanPhone}`;
+
+    if (!address.trim() || address.trim().length < 5) {
+      setError('Please enter your complete delivery address.');
       return;
     }
 
     setLoading(true);
     setError('');
 
-    const selectedStateObj = states.find((s) => String(s.id) === String(stateId));
-
     const profileData = {
       name: name.trim(),
       gender,
       age: parseInt(age, 10),
-      kitchenType,
-      stateId: parseInt(stateId, 10),
-      stateName: selectedStateObj ? selectedStateObj.name : 'Selected Region'
+      phone: formattedPhone,
+      address: address.trim()
     };
 
     try {
@@ -85,10 +76,6 @@ export const ProfileSetup = () => {
       setLoading(false);
     }
   };
-
-  if (statesLoading) {
-    return <Loader fullPage={true} message="Loading profile settings..." />;
-  }
 
   return (
     <div className="profile-setup-container">
@@ -109,7 +96,7 @@ export const ProfileSetup = () => {
 
         <div className="profile-card-header">
           <h2>Complete Your Profile</h2>
-          <p className="subtitle">Tell us about your kitchen to tailor your pantry ingredients.</p>
+          <p className="subtitle">Tell us your contact details and address to tailor your pantry delivery.</p>
         </div>
 
         {error && <div className="profile-error-alert">{error}</div>}
@@ -162,40 +149,35 @@ export const ProfileSetup = () => {
           </div>
 
           <div className="profile-input-group">
-            <label htmlFor="kitchen-select">Kitchen/Food Preference</label>
-            <select
-              id="kitchen-select"
-              value={kitchenType}
-              onChange={(e) => setKitchenType(e.target.value)}
+            <label htmlFor="phone-input">Phone Number (+91 10-digit)</label>
+            <input
+              id="phone-input"
+              type="tel"
+              placeholder="e.g. 98401 23456"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
               className="profile-input"
-            >
-              <option value="">Select Kitchen Type</option>
-              <option value="Vegetarian">Pure Vegetarian</option>
-              <option value="Non-Vegetarian">Non-Vegetarian</option>
-              <option value="Vegan">Vegan</option>
-              <option value="Gluten-Free">Gluten-Free</option>
-            </select>
+            />
+            <span className="helper-text-info">
+              Used for delivery coordination and order confirmation.
+            </span>
           </div>
 
           <div className="profile-input-group">
-            <label htmlFor="state-select">Home State (for State-wise Ingredients)</label>
-            <select
-              id="state-select"
-              value={stateId}
-              onChange={(e) => setStateId(e.target.value)}
+            <label htmlFor="address-input">Complete Delivery Address</label>
+            <textarea
+              id="address-input"
+              rows="3"
+              placeholder="e.g. Flat 4B, Shanthi Apts, 14th Cross, Gandhi Nagar, Adyar, Chennai - 600020"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
               required
               className="profile-input"
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state.id} value={state.id}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
+              style={{ resize: 'vertical', minHeight: '80px' }}
+            />
             <span className="helper-text-info">
-              We customize labels and language depending on state-wise ingredients list.
+              Your pantry labels will be safely shipped to this delivery address.
             </span>
           </div>
 

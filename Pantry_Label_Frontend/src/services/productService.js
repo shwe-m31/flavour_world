@@ -107,21 +107,14 @@ export const productService = {
     }
 
     // Map vernacular script translation according to chosen language and resolve images
-    const l = lang ? lang.trim().toLowerCase() : '';
+    const l = lang ? lang.trim().toLowerCase() : 'tamil';
     filtered = filtered.map(p => {
-      let translated = p.bilingualName;
-      if (l === 'tamil') translated = p.tamilName || p.bilingualName;
-      else if (l === 'hindi') translated = p.hindiName || p.bilingualName;
-      else if (l === 'telugu') translated = p.teluguName || p.bilingualName;
-      else if (l === 'kannada') translated = p.kannadaName || p.bilingualName;
-      else if (l === 'malayalam') translated = p.malayalamName || p.bilingualName;
-      else if (l === 'bengali') translated = p.bengaliName || p.bilingualName;
-      else if (l === 'marathi') translated = p.marathiName || p.bilingualName;
-      else if (l === 'gujarati') translated = p.gujaratiName || p.bilingualName;
-      else if (l === 'punjabi') translated = p.punjabiName || p.bilingualName;
-      else if (l === 'odia') translated = p.odiaName || p.bilingualName;
-      else if (l === 'assamese') translated = p.assameseName || p.bilingualName;
-      else if (l === 'urdu') translated = p.urduName || p.bilingualName;
+      let translated = '';
+      if (l === 'tamil') {
+        translated = p.tamilName || p.tamil || p.bilingualName;
+      } else {
+        translated = p[`${l}Name`] || p[l];
+      }
 
       const cleanName = sanitizeText(p.name, 'Ingredient');
       const cleanBilingual = sanitizeText(translated, cleanName);

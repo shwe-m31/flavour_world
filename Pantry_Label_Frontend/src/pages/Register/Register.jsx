@@ -74,12 +74,8 @@ export const Register = () => {
   }, [navigate]);
 
   const handleBackNavigation = () => {
-    if (sessionStorage.getItem('flavour_world_logged_out') === 'true') {
-      sessionStorage.removeItem('flavour_world_logged_out');
-      navigate('/', { replace: true });
-    } else {
-      navigate(-1);
-    }
+    sessionStorage.removeItem('flavour_world_logged_out');
+    navigate('/');
   };
 
   // Validation logic for Method 1

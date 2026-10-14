@@ -23,9 +23,11 @@ public class ProfileRequest {
     @Max(value = 120, message = "Age cannot exceed 120")
     private Integer age;
 
-    @NotBlank(message = "Kitchen type is required")
+    private String phone;
+
+    private String address;
+
     private String kitchenType;
 
-    @NotNull(message = "State ID is required")
     private Long stateId;
 }

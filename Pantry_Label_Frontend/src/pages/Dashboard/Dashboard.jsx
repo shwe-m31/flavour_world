@@ -115,30 +115,32 @@ export const Dashboard = () => {
     return productService.getAllProductsSync();
   }, []);
 
-  // Compute recommended 30 items
-  const applyRecommendedSelections = useCallback((categoryVal, stateVal, dietVal) => {
+  // Compute recommended items with N-5 rule (35->30, 70->65, 105->100, 140->135)
+  const applyRecommendedSelections = useCallback((categoryVal, stateVal, dietVal, qtyVal) => {
     if (!allProducts || allProducts.length === 0) return;
+    const effectiveQty = qtyVal !== undefined ? qtyVal : sheetQuantity;
+    const targetCount = Math.max(1, effectiveQty - 5);
     const recommendedIds = getRecommendedProductIds(
       categoryVal,
       stateVal,
       dietVal,
       allProducts,
-      30
+      targetCount
     );
     setSelectedProductIds(recommendedIds);
-  }, [allProducts, setSelectedProductIds]);
+  }, [allProducts, sheetQuantity, setSelectedProductIds]);
 
-  // Auto-select 30 items on initial mount if none selected
+  // Auto-select N-5 items on initial mount if none selected
   useEffect(() => {
     if (allProducts && allProducts.length > 0 && selectedProductIds.length === 0) {
-      applyRecommendedSelections(consumerCategory, selectedStateId, cookingPreference);
+      applyRecommendedSelections(consumerCategory, selectedStateId, cookingPreference, sheetQuantity);
     }
-  }, [allProducts, selectedProductIds.length, applyRecommendedSelections, consumerCategory, selectedStateId, cookingPreference]);
+  }, [allProducts, selectedProductIds.length, applyRecommendedSelections, consumerCategory, selectedStateId, cookingPreference, sheetQuantity]);
 
   // Handle Persona Change
   const handleCategorySelect = (categoryId) => {
     setConsumerCategory(categoryId);
-    applyRecommendedSelections(categoryId, selectedStateId, cookingPreference);
+    applyRecommendedSelections(categoryId, selectedStateId, cookingPreference, sheetQuantity);
   };
 
   // Handle State Change
@@ -152,28 +154,29 @@ export const Dashboard = () => {
       setSelectedLanguage(stateObj.langCode);
     }
 
-    applyRecommendedSelections(consumerCategory, newStateId, cookingPreference);
+    applyRecommendedSelections(consumerCategory, newStateId, cookingPreference, sheetQuantity);
   };
 
   // Handle Cooking Preference Change
   const handlePreferenceChange = (pref) => {
     setCookingPreference(pref);
-    applyRecommendedSelections(consumerCategory, selectedStateId, pref);
+    applyRecommendedSelections(consumerCategory, selectedStateId, pref, sheetQuantity);
   };
 
-  // Handle Shape Change (Square 35 / Rectangle 40)
+  // Handle Shape Change (Square / Rectangle within unified section)
   const handleShapeToggle = (shape) => {
     handleSetShape(shape);
   };
 
-  // Handle Container Quantity Change
+  // Handle Container Quantity Change (Unified tiers: 35, 70, 105, 140; auto-selects qty - 5 items)
   const handleQuantitySelect = (qty) => {
     setSheetQuantity(qty);
+    applyRecommendedSelections(consumerCategory, selectedStateId, cookingPreference, qty);
   };
 
-  // Reset to 30 Recommended Items
+  // Reset to Defaults (qty - 5 recommended items)
   const handleResetRecommendations = () => {
-    applyRecommendedSelections(consumerCategory, selectedStateId, cookingPreference);
+    applyRecommendedSelections(consumerCategory, selectedStateId, cookingPreference, sheetQuantity);
   };
 
   const handleProceed = () => {
@@ -188,13 +191,8 @@ export const Dashboard = () => {
     return getIndianStateById(selectedStateId) || INDIAN_STATES[3];
   }, [selectedStateId]);
 
-  // Available container quantities based on shape
-  const quantityOptions = useMemo(() => {
-    if (selectedShape === 'rectangle') {
-      return [40, 80, 120, 160];
-    }
-    return [35, 70, 105, 140];
-  }, [selectedShape]);
+  // Unified container quantities for both Square and Rectangle (35, 70, 105, 140)
+  const quantityOptions = useMemo(() => [35, 70, 105, 140], []);
 
   if (initialLoading) {
     return <Loader fullPage={true} message="Loading platform dashboard..." />;
@@ -364,14 +362,14 @@ export const Dashboard = () => {
                   className={`shape-btn ${selectedShape === 'square' ? 'active' : ''}`}
                   onClick={() => handleShapeToggle('square')}
                 >
-                  Square (5×7 Sheet)
+                  Square (7×5 Sheet)
                 </button>
                 <button
                   type="button"
                   className={`shape-btn ${selectedShape === 'rectangle' ? 'active' : ''}`}
                   onClick={() => handleShapeToggle('rectangle')}
                 >
-                  Rectangle (5×8 Sheet)
+                  Rectangle (5×7 Sheet)
                 </button>
               </div>
             </div>
@@ -396,8 +394,8 @@ export const Dashboard = () => {
             <div className="container-suggestion-callout">
               <Sparkles size={16} className="callout-sparkle" />
               <span>
-                <strong>Great!</strong> We auto-selected <strong>30 staple labels</strong> for your kitchen.
-                Sheet capacity: <strong>{sheetQuantity} labels</strong> ({selectedShape === 'square' ? '35/sheet' : '40/sheet'}).
+                <strong>Great!</strong> We auto-selected <strong>{Math.max(1, sheetQuantity - 5)} staple labels</strong> for your kitchen.
+                Sheet capacity: <strong>{sheetQuantity} labels</strong>.
               </span>
             </div>
           </section>
@@ -411,21 +409,21 @@ export const Dashboard = () => {
               <div>
                 <h3 className="step-title">Select / Unselect Items</h3>
                 <p className="step-subtitle">
-                  We have auto-selected 30 items for you. You can unselect or add more.
+                  We have auto-selected {Math.max(1, sheetQuantity - 5)} items for you. You can unselect or add more.
                 </p>
               </div>
             </div>
 
             <div className="header-actions-group">
-              {/* Reset to 30 Defaults */}
+              {/* Reset to Defaults */}
               <button
                 type="button"
                 className="reset-recommended-btn"
                 onClick={handleResetRecommendations}
-                title="Restore default 30 recommended ingredients"
+                title={`Restore default ${Math.max(1, sheetQuantity - 5)} recommended ingredients`}
               >
                 <RotateCcw size={14} />
-                <span>Reset to 30 Defaults</span>
+                <span>Reset to {Math.max(1, sheetQuantity - 5)} Defaults</span>
               </button>
 
               {/* Language Switcher */}

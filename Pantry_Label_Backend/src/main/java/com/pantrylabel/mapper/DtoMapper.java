@@ -14,6 +14,8 @@ public class DtoMapper {
                 .name(value.getName())
                 .gender(value.getGender())
                 .age(value.getAge())
+                .phone(value.getPhone())
+                .address(value.getAddress())
                 .kitchenType(value.getKitchenType())
                 .stateId(value.getState() == null ? null : value.getState().getId())
                 .stateName(value.getState() == null ? null : value.getState().getName())

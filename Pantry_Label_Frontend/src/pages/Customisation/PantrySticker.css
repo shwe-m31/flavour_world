@@ -22,10 +22,10 @@
 }
 
 .pantry-sticker-wrapper.shape-rectangle {
-  width: 380px;
-  height: 270px;
+  width: 400px;
+  height: 200px;
   max-width: 100%;
-  aspect-ratio: 1.4 / 1;
+  aspect-ratio: 2 / 1;
 }
 
 .pantry-sticker-wrapper.shape-oval {
@@ -299,14 +299,28 @@
 /* Responsive adjustments */
 @media (max-width: 480px) {
   .pantry-sticker-wrapper.shape-square {
-    width: 270px;
-    height: 270px;
+    width: 250px;
+    height: 250px;
   }
   .pantry-sticker-wrapper.shape-rectangle {
-    width: 300px;
-    height: 215px;
+    width: 280px;
+    height: 140px;
   }
   .pantry-sticker-regional-title {
-    font-size: 1.25rem !important;
+    font-size: 1.15rem !important;
+  }
+}
+
+@media (max-width: 300px) {
+  .pantry-sticker-wrapper.shape-square {
+    width: 200px;
+    height: 200px;
+  }
+  .pantry-sticker-wrapper.shape-rectangle {
+    width: 210px;
+    height: 105px;
+  }
+  .pantry-sticker-regional-title {
+    font-size: 1rem !important;
   }
 }

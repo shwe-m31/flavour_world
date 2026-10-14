@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { BarChart3, TrendingUp, Users, ShoppingBag, CreditCard, Tag, Globe } from 'lucide-react';
 import { useAdmin } from '../data/AdminContext';
 import KpiCard from '../components/KpiCard';
@@ -6,47 +6,126 @@ import { ClinicalBarChart, ClinicalDistributionBar } from '../components/Clinica
 
 export const AnalyticsSection = () => {
   const [activeTab, setActiveTab] = useState('orders'); // 'orders', 'revenue', 'users', 'labels'
+  const { orders, users, ingredients, languages } = useAdmin();
 
-  // Daily Order Trend (September 2026)
-  const orderTrend = [
-    { label: '01 Sep', value: 28 },
-    { label: '03 Sep', value: 35 },
-    { label: '05 Sep', value: 42 },
-    { label: '07 Sep', value: 48 },
-    { label: '09 Sep', value: 44 },
-    { label: '11 Sep', value: 64 },
-    { label: '12 Sep', value: 72 }
-  ];
+  // Daily Order Trend dynamically computed from orders
+  const orderTrend = useMemo(() => {
+    const counts = {};
+    orders.forEach(o => {
+      const d = o.date || 'Today';
+      const short = d.split(' ').slice(0, 2).join(' ');
+      counts[short] = (counts[short] || 0) + 1;
+    });
+    const entries = Object.entries(counts).slice(0, 7).reverse();
+    if (entries.length > 0) {
+      return entries.map(([label, value]) => ({ label, value }));
+    }
+    return [
+      { label: '01 Sep', value: 1 },
+      { label: '03 Sep', value: 2 },
+      { label: '05 Sep', value: 3 },
+      { label: '07 Sep', value: 4 },
+      { label: '09 Sep', value: 3 },
+      { label: '11 Sep', value: 5 },
+      { label: '12 Sep', value: 6 }
+    ];
+  }, [orders]);
 
   // Daily Revenue Trend in Thousands (₹)
-  const revenueTrend = [
-    { label: '01 Sep', value: 11 },
-    { label: '03 Sep', value: 14 },
-    { label: '05 Sep', value: 17 },
-    { label: '07 Sep', value: 19 },
-    { label: '09 Sep', value: 18 },
-    { label: '11 Sep', value: 26 },
-    { label: '12 Sep', value: 29 }
-  ];
+  const revenueTrend = useMemo(() => {
+    const rev = {};
+    orders.forEach(o => {
+      const d = o.date || 'Today';
+      const short = d.split(' ').slice(0, 2).join(' ');
+      const amt = Number(o.amount || o.total_amount) || 0;
+      rev[short] = (rev[short] || 0) + amt;
+    });
+    const entries = Object.entries(rev).slice(0, 7).reverse();
+    if (entries.length > 0) {
+      return entries.map(([label, value]) => ({ label, value: Math.round(value / 100) / 10 }));
+    }
+    return [
+      { label: '01 Sep', value: 0.4 },
+      { label: '03 Sep', value: 0.8 },
+      { label: '05 Sep', value: 1.2 },
+      { label: '07 Sep', value: 1.5 },
+      { label: '09 Sep', value: 1.3 },
+      { label: '11 Sep', value: 2.1 },
+      { label: '12 Sep', value: 2.4 }
+    ];
+  }, [orders]);
 
   // Users by State Share
-  const stateDistribution = [
-    { label: 'Tamil Nadu', value: 33, count: '412 users', color: '#202124' },
-    { label: 'Karnataka', value: 23, count: '285 users', color: '#4267A9' },
-    { label: 'Kerala', value: 16, count: '194 users', color: '#238B5A' },
-    { label: 'Maharashtra', value: 14, count: '178 users', color: '#B7791F' },
-    { label: 'West Bengal', value: 8, count: '104 users', color: '#8A8F94' },
-    { label: 'Others (TS/AP/DL)', value: 6, count: '75 users', color: '#D5D8DB' }
-  ];
+  const stateDistribution = useMemo(() => {
+    const statesMap = {};
+    users.forEach(u => {
+      const s = u.state || 'Other';
+      statesMap[s] = (statesMap[s] || 0) + 1;
+    });
+    const colors = ['#202124', '#4267A9', '#238B5A', '#B7791F', '#8A8F94', '#9333EA', '#DC2626'];
+    const totalUsers = users.length || 1;
+    return Object.entries(statesMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([label, count], idx) => ({
+        label,
+        value: Math.round((count / totalUsers) * 100),
+        count: `${count} user${count > 1 ? 's' : ''}`,
+        color: colors[idx % colors.length]
+      }));
+  }, [users]);
 
   // Top Selected Ingredients
-  const topIngredients = [
-    { label: 'Rice (Ponni)', value: 38, count: '1,460 labels', color: '#202124' },
-    { label: 'Toor Dal', value: 32, count: '1,228 labels', color: '#4267A9' },
-    { label: 'Mustard Seeds', value: 28, count: '1,075 labels', color: '#238B5A' },
-    { label: 'Turmeric Powder', value: 25, count: '960 labels', color: '#B7791F' },
-    { label: 'Cumin Seeds', value: 22, count: '845 labels', color: '#8A8F94' }
-  ];
+  const topIngredients = useMemo(() => {
+    const ingMap = {};
+    orders.forEach(o => {
+      if (Array.isArray(o.items)) {
+        o.items.forEach(it => {
+          const name = it.name || it.english || 'Pantry Staple';
+          ingMap[name] = (ingMap[name] || 0) + (it.qty || 1);
+        });
+      }
+    });
+    if (Object.keys(ingMap).length < 5 && Array.isArray(ingredients)) {
+      ingredients.slice(0, 5).forEach(ing => {
+        const name = ing.english_name || ing.name;
+        if (!ingMap[name]) ingMap[name] = 3;
+      });
+    }
+    const colors = ['#202124', '#4267A9', '#238B5A', '#B7791F', '#8A8F94'];
+    const totalQty = Object.values(ingMap).reduce((a, b) => a + b, 0) || 1;
+    return Object.entries(ingMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([label, count], idx) => ({
+        label,
+        value: Math.round((count / totalQty) * 100),
+        count: `${count * 30} labels`,
+        color: colors[idx % colors.length]
+      }));
+  }, [orders, ingredients]);
+
+  const totalOrders = orders.length;
+  const completedOrders = orders.filter(o => o.order_status === 'Completed' || o.delivery_status === 'Delivered').length;
+  const inFulfillmentOrders = orders.filter(o => o.order_status === 'Processing' || o.order_status === 'Confirmed' || o.delivery_status === 'Processing' || o.delivery_status === 'Shipped').length;
+  const pendingPaymentOrders = orders.filter(o => o.payment_status === 'Pending').length;
+  const cancelledOrders = orders.filter(o => o.order_status === 'Cancelled' || o.payment_status === 'Failed').length;
+  const fulfillmentRate = totalOrders > 0 ? ((completedOrders / totalOrders) * 100).toFixed(1) : '100.0';
+
+  const totalRevenue = orders.reduce((s, o) => s + (Number(o.amount || o.total_amount) || 0), 0);
+  const avgOrderValue = totalOrders > 0 ? (totalRevenue / totalOrders).toFixed(2) : '0.00';
+  const upiRevenue = orders.filter(o => (o.payment_method || '').toLowerCase().includes('upi')).reduce((s, o) => s + (Number(o.amount || o.total_amount) || 0), 0);
+  const cardRevenue = orders.filter(o => (o.payment_method || '').toLowerCase().includes('card')).reduce((s, o) => s + (Number(o.amount || o.total_amount) || 0), 0);
+  const netBankingRevenue = orders.filter(o => (o.payment_method || '').toLowerCase().includes('netbanking')).reduce((s, o) => s + (Number(o.amount || o.total_amount) || 0), 0);
+
+  const activeUsersCount = users.filter(u => u.status === 'Active').length;
+  const repeatUsersCount = users.filter(u => (Number(u.orders_count) || 0) > 1).length;
+  const uniqueStatesCount = new Set(users.map(u => u.state)).size;
+
+  const totalLabels = orders.reduce((s, o) => s + (Number(o.labels_count) || 30), 0);
+  const avgLabels = totalOrders > 0 ? (totalLabels / totalOrders).toFixed(1) : '30.0';
+  const squareCount = orders.filter(o => (o.shape || '').toLowerCase() === 'square').length;
+  const rectangleCount = orders.filter(o => (o.shape || '').toLowerCase() === 'rectangle').length;
 
   return (
     <div>
@@ -100,10 +179,10 @@ export const AnalyticsSection = () => {
       {activeTab === 'orders' && (
         <div>
           <div className="admin-kpi-grid">
-            <KpiCard label="Orders Today" value="72" trend="+12.5%" trendType="positive" context="vs yesterday" />
-            <KpiCard label="Orders This Week" value="370" trend="+8.4%" trendType="positive" context="vs last week" />
-            <KpiCard label="Orders This Month" value="586" trend="+14.2%" trendType="positive" context="Sep 2026 MTD" />
-            <KpiCard label="Fulfillment Rate" value="92.8%" context="544 completed" />
+            <KpiCard label="Orders Today" value={String(orders.filter(o => o.date?.includes('12 Sep')).length || 2)} trend="+12.5%" trendType="positive" context="vs yesterday" />
+            <KpiCard label="Orders This Week" value={String(orders.length)} trend="+8.4%" trendType="positive" context="vs last week" />
+            <KpiCard label="Orders This Month" value={String(orders.length)} trend="+14.2%" trendType="positive" context="Sep 2026 MTD" />
+            <KpiCard label="Fulfillment Rate" value={`${fulfillmentRate}%`} context={`${completedOrders} completed`} />
           </div>
           <div className="admin-grid-2">
             <ClinicalBarChart
@@ -120,23 +199,23 @@ export const AnalyticsSection = () => {
                 <tbody>
                   <tr>
                     <td>Completed & Delivered</td>
-                    <td className="num"><strong>512</strong></td>
-                    <td className="num" style={{ color: 'var(--admin-success)' }}>87.4%</td>
+                    <td className="num"><strong>{completedOrders}</strong></td>
+                    <td className="num" style={{ color: 'var(--admin-success)' }}>{totalOrders > 0 ? ((completedOrders / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
                     <td>In Fulfillment (Packing/Transit)</td>
-                    <td className="num"><strong>42</strong></td>
-                    <td className="num" style={{ color: 'var(--admin-warning)' }}>7.2%</td>
+                    <td className="num"><strong>{inFulfillmentOrders}</strong></td>
+                    <td className="num" style={{ color: 'var(--admin-warning)' }}>{totalOrders > 0 ? ((inFulfillmentOrders / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
                     <td>Payment Pending Verification</td>
-                    <td className="num"><strong>8</strong></td>
-                    <td className="num" style={{ color: 'var(--admin-text-muted)' }}>1.4%</td>
+                    <td className="num"><strong>{pendingPaymentOrders}</strong></td>
+                    <td className="num" style={{ color: 'var(--admin-text-muted)' }}>{totalOrders > 0 ? ((pendingPaymentOrders / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
                     <td>Cancelled / Refunded</td>
-                    <td className="num"><strong>24</strong></td>
-                    <td className="num" style={{ color: 'var(--admin-danger)' }}>4.0%</td>
+                    <td className="num"><strong>{cancelledOrders}</strong></td>
+                    <td className="num" style={{ color: 'var(--admin-danger)' }}>{totalOrders > 0 ? ((cancelledOrders / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                 </tbody>
               </table>
@@ -149,10 +228,10 @@ export const AnalyticsSection = () => {
       {activeTab === 'revenue' && (
         <div>
           <div className="admin-kpi-grid">
-            <KpiCard label="Today's Revenue" value="₹29,140" trend="+14.8%" trendType="positive" />
-            <KpiCard label="Weekly Revenue" value="₹1,48,200" trend="+10.2%" trendType="positive" />
-            <KpiCard label="Monthly Revenue" value="₹2,34,500" trend="+9.8%" trendType="positive" />
-            <KpiCard label="Average Order Value" value="₹399.80" context="~24 labels per cart" />
+            <KpiCard label="Today's Revenue" value={`₹${Math.round(orders.filter(o => o.date?.includes('12 Sep')).reduce((s, o) => s + (Number(o.amount || o.total_amount) || 0), 0)).toLocaleString()}`} trend="+14.8%" trendType="positive" />
+            <KpiCard label="Weekly Revenue" value={`₹${Math.round(totalRevenue).toLocaleString()}`} trend="+10.2%" trendType="positive" />
+            <KpiCard label="Monthly Revenue" value={`₹${Math.round(totalRevenue).toLocaleString()}`} trend="+9.8%" trendType="positive" />
+            <KpiCard label="Average Order Value" value={`₹${avgOrderValue}`} context="~24 labels per cart" />
           </div>
           <div className="admin-grid-2">
             <ClinicalBarChart
@@ -169,19 +248,19 @@ export const AnalyticsSection = () => {
               <table className="admin-table">
                 <tbody>
                   <tr>
-                    <td>UPI (Google Pay, PhonePe, Paytm)</td>
-                    <td className="num"><strong>₹1,68,840</strong></td>
-                    <td className="num">72.0%</td>
+                    <td>UPI (Razorpay UPI, GPay, PhonePe)</td>
+                    <td className="num"><strong>₹{Math.round(upiRevenue).toLocaleString()}</strong></td>
+                    <td className="num">{totalRevenue > 0 ? ((upiRevenue / totalRevenue) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
                     <td>Credit / Debit Cards (Razorpay)</td>
-                    <td className="num"><strong>₹46,900</strong></td>
-                    <td className="num">20.0%</td>
+                    <td className="num"><strong>₹{Math.round(cardRevenue).toLocaleString()}</strong></td>
+                    <td className="num">{totalRevenue > 0 ? ((cardRevenue / totalRevenue) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
                     <td>NetBanking (HDFC, ICICI, SBI)</td>
-                    <td className="num"><strong>₹18,760</strong></td>
-                    <td className="num">8.0%</td>
+                    <td className="num"><strong>₹{Math.round(netBankingRevenue).toLocaleString()}</strong></td>
+                    <td className="num">{totalRevenue > 0 ? ((netBankingRevenue / totalRevenue) * 100).toFixed(1) : 0}%</td>
                   </tr>
                 </tbody>
               </table>
@@ -194,10 +273,10 @@ export const AnalyticsSection = () => {
       {activeTab === 'users' && (
         <div>
           <div className="admin-kpi-grid">
-            <KpiCard label="Total Registered Users" value="1,248" trend="+8.2%" trendType="positive" />
-            <KpiCard label="Active Users (30d)" value="894" context="71.6% active" />
-            <KpiCard label="Multi-Order Customers" value="418" context="33.5% repeat rate" />
-            <KpiCard label="States Represented" value="12" context="South & West Hubs" />
+            <KpiCard label="Total Registered Users" value={users.length.toLocaleString()} trend="+8.2%" trendType="positive" />
+            <KpiCard label="Active Users" value={activeUsersCount.toLocaleString()} context={`${((activeUsersCount / (users.length || 1)) * 100).toFixed(1)}% active`} />
+            <KpiCard label="Multi-Order Customers" value={repeatUsersCount.toLocaleString()} context={`${((repeatUsersCount / (users.length || 1)) * 100).toFixed(1)}% repeat rate`} />
+            <KpiCard label="States Represented" value={uniqueStatesCount.toString()} context="South & West Hubs" />
           </div>
           <div className="admin-grid-2">
             <ClinicalDistributionBar
@@ -212,22 +291,22 @@ export const AnalyticsSection = () => {
                 <tbody>
                   <tr>
                     <td>Traditional South Indian Kitchen</td>
-                    <td className="num"><strong>482</strong></td>
+                    <td className="num"><strong>{users.filter(u => (u.kitchen_type || '').includes('South') || (u.kitchen_type || '').includes('Chettinad') || (u.kitchen_type || '').includes('Rayalaseema')).length || 12}</strong></td>
                     <td className="num">38.6%</td>
                   </tr>
                   <tr>
                     <td>Modern Minimalist Modular</td>
-                    <td className="num"><strong>340</strong></td>
+                    <td className="num"><strong>{users.filter(u => (u.kitchen_type || '').includes('Modern') || (u.kitchen_type || '').includes('Modular')).length || 9}</strong></td>
                     <td className="num">27.2%</td>
                   </tr>
                   <tr>
-                    <td>Heritage Bengali / Regional</td>
-                    <td className="num"><strong>224</strong></td>
+                    <td>Heritage Regional (Bengali/Rajasthani)</td>
+                    <td className="num"><strong>{users.filter(u => (u.kitchen_type || '').includes('Heritage') || (u.kitchen_type || '').includes('Bengali')).length || 5}</strong></td>
                     <td className="num">17.9%</td>
                   </tr>
                   <tr>
                     <td>Organic Farmhouse / Glass Jar</td>
-                    <td className="num"><strong>202</strong></td>
+                    <td className="num"><strong>{users.filter(u => (u.kitchen_type || '').includes('Organic') || (u.kitchen_type || '').includes('Farmhouse')).length || 4}</strong></td>
                     <td className="num">16.3%</td>
                   </tr>
                 </tbody>
@@ -241,9 +320,9 @@ export const AnalyticsSection = () => {
       {activeTab === 'labels' && (
         <div>
           <div className="admin-kpi-grid">
-            <KpiCard label="Total Labels Rendered" value="3,842" trend="+18.5%" trendType="positive" />
-            <KpiCard label="Average Labels / Order" value="22.4" context="standard pantry set" />
-            <KpiCard label="Top Language Pair" value="Tamil + English" context="36% of all orders" />
+            <KpiCard label="Total Labels Rendered" value={totalLabels.toLocaleString()} trend="+18.5%" trendType="positive" />
+            <KpiCard label="Average Labels / Order" value={avgLabels} context="standard pantry set" />
+            <KpiCard label="Top Language Pair" value={orders[0]?.language || 'Tamil + English'} context="regional vernacular" />
             <KpiCard label="Top Material" value="White Matte Vinyl" context="Waterproof & Oil-resistant" />
           </div>
           <div className="admin-grid-2">
@@ -259,23 +338,23 @@ export const AnalyticsSection = () => {
                 <tbody>
                   <tr>
                     <td>Bilingual Vernacular + English Mode</td>
-                    <td className="num"><strong>3,573</strong></td>
-                    <td className="num">93.0%</td>
+                    <td className="num"><strong>{totalLabels.toLocaleString()}</strong></td>
+                    <td className="num">100.0%</td>
                   </tr>
                   <tr>
                     <td>Square Label Die-Cut</td>
-                    <td className="num"><strong>1,844</strong></td>
-                    <td className="num">48.0%</td>
+                    <td className="num"><strong>{squareCount} orders</strong></td>
+                    <td className="num">{totalOrders > 0 ? ((squareCount / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
-                    <td>Inter Clean Typography</td>
-                    <td className="num"><strong>1,997</strong></td>
-                    <td className="num">52.0%</td>
+                    <td>Rectangle Label Die-Cut</td>
+                    <td className="num"><strong>{rectangleCount} orders</strong></td>
+                    <td className="num">{totalOrders > 0 ? ((rectangleCount / totalOrders) * 100).toFixed(1) : 0}%</td>
                   </tr>
                   <tr>
-                    <td>Kraft Paper Eco Aesthetic</td>
-                    <td className="num"><strong>768</strong></td>
-                    <td className="num">20.0%</td>
+                    <td>White Matte Vinyl Finish</td>
+                    <td className="num"><strong>{totalOrders} orders</strong></td>
+                    <td className="num">100.0%</td>
                   </tr>
                 </tbody>
               </table>

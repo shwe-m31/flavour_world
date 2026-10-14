@@ -44,7 +44,7 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
   const cornerObj = getCornerById(selectedCorner);
   const borderObj = getBorderById(selectedBorderStyle);
 
-  const capacityPerSheet = selectedShape === 'square' ? 35 : 40;
+  const capacityPerSheet = 35;
   const sheetCount = Math.max(1, Math.ceil((sheetQuantity || 35) / capacityPerSheet));
 
   const handleAction = async (actionType) => {
@@ -108,7 +108,7 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
           </div>
           <div className="spec-row">
             <span>Sheet Capacity:</span>
-            <strong>{sheetQuantity} Containers ({selectedShape === 'square' ? '5×7 Sheet • 35/sheet' : '5×8 Sheet • 40/sheet'}, {sheetCount} Sheet{sheetCount > 1 ? 's' : ''})</strong>
+            <strong>{sheetQuantity} Containers ({selectedShape === 'square' ? '7×5 Sheet • 35/sheet' : '5×7 Sheet • 35/sheet'}, {sheetCount} Sheet{sheetCount > 1 ? 's' : ''})</strong>
           </div>
           <div className="spec-row">
             <span>Sticker Palette:</span>
@@ -147,7 +147,7 @@ export const SummaryTab = ({ selectedProducts = [], onBack }) => {
           <ul>
             {selectedProducts.map(p => {
               const langKey = (selectedLanguage || 'tamil').toLowerCase().trim();
-              const regText = p[langKey] || p[`${langKey}Name`] || p.bilingualName;
+              const regText = p[langKey] || p[`${langKey}Name`] || (langKey === 'tamil' ? (p.tamilName || p.bilingualName) : '');
               const cleanReg = regText ? String(regText).replace(/\(cid:\d+\)/g, '').trim() : '';
               return (
                 <li key={p.id} className="summary-product-item">

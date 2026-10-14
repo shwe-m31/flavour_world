@@ -22,12 +22,13 @@ export const LivePreviewTab = ({ selectedProducts = [], onNext, onBack }) => {
   const [viewMode, setViewMode] = useState('sheet'); // Default to 'sheet' to highlight 5x7 / 5x8 layout!
   const [currentSheetIndex, setCurrentSheetIndex] = useState(0);
 
-  // Responsive scale reference for adaptive mobile sheet view (Req 10)
+  // Responsive scale reference for adaptive mobile sheet view
   const containerRef = useRef(null);
   const [scale, setScale] = useState(1);
 
-  const baseSheetWidth = selectedShape === 'square' ? 760 : 990;
-  const baseSheetHeight = selectedShape === 'square' ? 1040 : 700;
+  // Both Square and Rectangle use standard A4 Landscape (297mm × 210mm) proportion (990 × 700)
+  const baseSheetWidth = 990;
+  const baseSheetHeight = 700;
 
   useEffect(() => {
     const updateScale = () => {
@@ -45,12 +46,10 @@ export const LivePreviewTab = ({ selectedProducts = [], onNext, onBack }) => {
     return () => window.removeEventListener('resize', updateScale);
   }, [baseSheetWidth, selectedShape]);
 
-  // Sheet layout constants matching Image 1 & 2
-  // Square: 5 columns x 7 rows = 35 per sheet (Portrait)
-  // Rectangle: 5 columns x 8 rows = 40 per sheet (Landscape)
-  const capacityPerSheet = selectedShape === 'square' ? 35 : 40;
-  const sheetCols = 5;
-  const sheetRows = selectedShape === 'square' ? 7 : 8;
+  // Both Square (7 cols × 5 rows) and Rectangle (5 cols × 7 rows) have strictly 35 stickers/sheet
+  const capacityPerSheet = 35;
+  const sheetCols = selectedShape === 'square' ? 7 : 5;
+  const sheetRows = selectedShape === 'square' ? 5 : 7;
 
   // Calculate total sheets needed for ordered quantity or selected items
   const totalItemsCount = Math.max(selectedProducts.length, sheetQuantity);
@@ -121,12 +120,12 @@ export const LivePreviewTab = ({ selectedProducts = [], onNext, onBack }) => {
           <span className="sticker-count-badge">
             {viewMode === 'single'
               ? `Sticker ${activeIndex + 1} of ${selectedProducts.length}`
-              : `Sheet View • ${selectedShape === 'square' ? '5 × 7 Grid (35/sheet)' : '5 × 8 Grid (40/sheet)'}`}
+              : `Sheet View • ${selectedShape === 'square' ? '7 × 5 Grid (35/sheet)' : '5 × 7 Grid (35/sheet)'}`}
           </span>
           <h4 className="active-item-title">
             {viewMode === 'single'
               ? currentProduct?.name || 'Selected Ingredient'
-              : `Physical Print Sheet (Sheet ${currentSheetIndex + 1} of ${totalSheets})`}
+              : `A4 Landscape Print Sheet (Sheet ${currentSheetIndex + 1} of ${totalSheets})`}
           </h4>
         </div>
 
@@ -213,124 +212,123 @@ export const LivePreviewTab = ({ selectedProducts = [], onNext, onBack }) => {
           )}
         </div>
       ) : (
-        /* Sheet Grid View (Exact reproduction of hand-drawn Image 1 & 2) */
-        <div className="sheet-preview-viewport" ref={containerRef}>
-          <div
-            className="sheet-scale-wrapper"
-            style={{
-              width: `${baseSheetWidth}px`,
-              transform: `scale(${scale})`,
-              transformOrigin: 'top center',
-              marginBottom: scale < 1 ? `${-(baseSheetHeight * (1 - scale))}px` : 0
-            }}
-          >
-            <div className={`sheet-paper-container sheet-orientation-${selectedShape === 'square' ? 'portrait' : 'landscape'}`}>
-              <div className="sheet-header-meta">
-                <div className="sheet-meta-title-col">
-                  <span className="sheet-brand">FLAVOUR WORLD • PHYSICAL DIE-CUT STICKER SHEET</span>
-                  <span className="sheet-spec">
-                    {selectedShape === 'square'
-                      ? 'Square Die-Cut Labels (1:1) • 5 Columns × 7 Rows = 35 Labels/Sheet'
-                      : 'Rectangular Die-Cut Labels (1.4:1) • 5 Columns × 8 Rows = 40 Labels/Sheet'}
+        /* Sheet Grid View (Clean A4 Landscape: Stickers Only) */
+        <div className="sheet-view-outer-wrapper">
+          {/* Controls Bar Outside Sheet */}
+          <div className="sheet-controls-bar">
+            <div className="sheet-meta-title-col">
+              <span className="sheet-brand">A4 LANDSCAPE PRINT SHEET (297 × 210 mm)</span>
+              <span className="sheet-spec">
+                {selectedShape === 'square'
+                  ? 'Square Stickers (4cm × 4cm) • 7 Columns × 5 Rows = 35 Stickers/Sheet'
+                  : 'Rectangle Stickers (5.4cm × 2.7cm, 2:1) • 5 Columns × 7 Rows = 35 Stickers/Sheet'}
+              </span>
+            </div>
+
+            <div className="sheet-actions-group">
+              {/* Sheet Navigation for multiple sheets */}
+              {totalSheets > 1 && (
+                <div className="sheet-pagination-box">
+                  <button
+                    type="button"
+                    className="sheet-nav-pill-btn"
+                    disabled={currentSheetIndex === 0}
+                    onClick={() => setCurrentSheetIndex((prev) => Math.max(0, prev - 1))}
+                  >
+                    ‹ Prev Sheet
+                  </button>
+                  <span className="sheet-nav-count">
+                    Sheet {currentSheetIndex + 1} / {totalSheets}
                   </span>
+                  <button
+                    type="button"
+                    className="sheet-nav-pill-btn"
+                    disabled={currentSheetIndex >= totalSheets - 1}
+                    onClick={() => setCurrentSheetIndex((prev) => Math.min(totalSheets - 1, prev + 1))}
+                  >
+                    Next Sheet ›
+                  </button>
                 </div>
+              )}
+            </div>
+          </div>
 
-                {/* Sheet Navigation for multiple sheets (e.g. 70, 80, 105, 140 labels) */}
-                {totalSheets > 1 && (
-                  <div className="sheet-pagination-box">
-                    <button
-                      type="button"
-                      className="sheet-nav-pill-btn"
-                      disabled={currentSheetIndex === 0}
-                      onClick={() => setCurrentSheetIndex((prev) => Math.max(0, prev - 1))}
-                    >
-                      ‹ Prev Sheet
-                    </button>
-                    <span className="sheet-nav-count">
-                      Sheet {currentSheetIndex + 1} / {totalSheets}
-                    </span>
-                    <button
-                      type="button"
-                      className="sheet-nav-pill-btn"
-                      disabled={currentSheetIndex >= totalSheets - 1}
-                      onClick={() => setCurrentSheetIndex((prev) => Math.min(totalSheets - 1, prev + 1))}
-                    >
-                      Next Sheet ›
-                    </button>
-                  </div>
-                )}
-              </div>
+          <div className="sheet-preview-viewport" ref={containerRef}>
+            <div
+              className="sheet-scale-wrapper"
+              style={{
+                width: `${baseSheetWidth}px`,
+                transform: `scale(${scale})`,
+                transformOrigin: 'top center',
+                marginBottom: scale < 1 ? `${-(baseSheetHeight * (1 - scale))}px` : 0
+              }}
+            >
+              {/* Clean Printable A4 Landscape Paper (Stickers Only: No header, no title, no slot tags, no outer border) */}
+              <div className="sheet-paper-container sheet-a4-landscape">
+                <div
+                  className={`sheet-stickers-cutting-grid grid-shape-${selectedShape}`}
+                  style={{
+                    '--grid-cols': sheetCols,
+                    '--grid-rows': sheetRows
+                  }}
+                >
+                  {sheetCells.map((cell) => {
+                    if (cell.product) {
+                      const isCellActive = cell.globalIndex === activeIndex;
+                      return (
+                        <div
+                          key={`slot-${cell.slotNumber}`}
+                          className={`sheet-sticker-cell shape-${selectedShape} ${isCellActive ? 'cell-active' : ''}`}
+                          onClick={() => {
+                            setActiveIndex(cell.globalIndex);
+                            setViewMode('single');
+                          }}
+                          title={`Label #${cell.slotNumber}: ${cell.product.name} (Click for close-up view)`}
+                        >
+                          <div className="sheet-cell-cut-frame">
+                            <PantrySticker
+                              product={cell.product}
+                              language={selectedLanguage}
+                              themeId={selectedTheme}
+                              shapeId={selectedShape}
+                              cornerId={selectedCorner}
+                              borderId={selectedBorderStyle}
+                              fontId={selectedFont}
+                              showIllustration={showIllustration}
+                              className="sheet-mini-sticker"
+                            />
+                          </div>
+                        </div>
+                      );
+                    }
 
-              {/* The 5-Column Cutting Grid (5x7 for Square, 5x8 for Rectangle) */}
-              <div
-                className={`sheet-stickers-cutting-grid grid-shape-${selectedShape}`}
-                style={{
-                  '--grid-cols': sheetCols,
-                  '--grid-rows': sheetRows
-                }}
-              >
-                {sheetCells.map((cell) => {
-                  if (cell.product) {
-                    const isCellActive = cell.globalIndex === activeIndex;
+                    // Empty slot placeholder
                     return (
                       <div
                         key={`slot-${cell.slotNumber}`}
-                        className={`sheet-sticker-cell shape-${selectedShape} ${isCellActive ? 'cell-active' : ''}`}
-                        onClick={() => {
-                          setActiveIndex(cell.globalIndex);
-                          setViewMode('single');
-                        }}
-                        title={`Label #${cell.slotNumber}: ${cell.product.name} (Click for close-up view)`}
+                        className={`sheet-sticker-cell shape-${selectedShape} cell-empty-slot`}
+                        title={`Empty Die-Cut Slot`}
                       >
-                        {/* Cutting Guideline Frame */}
                         <div className="sheet-cell-cut-frame">
-                          <PantrySticker
-                            product={cell.product}
-                            language={selectedLanguage}
-                            themeId={selectedTheme}
-                            shapeId={selectedShape}
-                            cornerId={selectedCorner}
-                            borderId={selectedBorderStyle}
-                            fontId={selectedFont}
-                            showIllustration={showIllustration}
-                            className="sheet-mini-sticker"
-                          />
+                          <div className="empty-slot-diecut-placeholder" />
                         </div>
-                        <span className="sheet-slot-number-tag">#{cell.slotNumber}</span>
                       </div>
                     );
-                  }
-
-                  // Empty die-cut slot marker (matches hand-drawn empty rows in Image 1 & 2)
-                  return (
-                    <div
-                      key={`slot-${cell.slotNumber}`}
-                      className={`sheet-sticker-cell shape-${selectedShape} cell-empty-slot`}
-                      title={`Slot #${cell.slotNumber}: Empty Die-Cut Slot / Cutting Guideline`}
-                    >
-                      <div className="sheet-cell-cut-frame">
-                        <div className="empty-slot-diecut-placeholder">
-                          <span className="empty-slot-icon"><Scissors size={12} /></span>
-                          <span className="empty-slot-text">Cut Guide</span>
-                          <span className="empty-slot-idx">Slot #{cell.slotNumber}</span>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Sheet Footnote matching reference annotations */}
-              <div className="sheet-footer-legend">
-                <span className="cutting-guide-hint">
-                  <Scissors size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
-                  Die-cut cutting guidelines between rows and columns (Margin gutter: 3mm)
-                </span>
-                <span className="sheet-calc-formula">
-                  {selectedShape === 'square' ? '7 × 5 = 35 Labels' : '8 × 5 = 40 Labels'}
-                </span>
+                  })}
+                </div>
               </div>
             </div>
+          </div>
+
+          {/* Bottom Sheet Footnote Outside Sheet */}
+          <div className="sheet-footer-legend">
+            <span className="cutting-guide-hint">
+              <Scissors size={13} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+              Die-cut gutters between stickers: 2.5mm • Waterproof vinyl sheet
+            </span>
+            <span className="sheet-calc-formula">
+              {selectedShape === 'square' ? '7 Columns × 5 Rows = 35 Stickers' : '5 Columns × 7 Rows = 35 Stickers'}
+            </span>
           </div>
         </div>
       )}

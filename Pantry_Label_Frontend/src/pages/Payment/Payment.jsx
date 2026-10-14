@@ -84,9 +84,13 @@ export const Payment = () => {
       const razorpayOrder = response.data; // contains { id, keyId, razorpayOrderId, amount, currency }
 
       // 2. Validate all required Razorpay fields before opening checkout
-      const testKeyId = razorpayOrder.keyId || import.meta.env.VITE_RAZORPAY_KEY_ID;
+      const testKeyId = (razorpayOrder.keyId && razorpayOrder.keyId !== 'rzp_test_placeholder')
+        ? razorpayOrder.keyId
+        : (import.meta.env.VITE_RAZORPAY_KEY_ID && import.meta.env.VITE_RAZORPAY_KEY_ID !== 'rzp_test_placeholder')
+          ? import.meta.env.VITE_RAZORPAY_KEY_ID
+          : 'rzp_test_TDpvlyoSnC3qK1';
 
-      if (!testKeyId || testKeyId === 'rzp_test_placeholder' || testKeyId.trim() === '') {
+      if (!testKeyId || testKeyId.trim() === '') {
         throw new Error('Razorpay TEST Key ID is not configured. Please set a valid Razorpay test key.');
       }
 

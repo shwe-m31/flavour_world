@@ -761,6 +761,36 @@
   }
 }
 
+@media (max-width: 300px) {
+  .ingredients-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .dashboard-content {
+    padding: 0.5rem 0.25rem;
+  }
+  .setup-step-card {
+    padding: 0.65rem 0.45rem;
+  }
+  .hero-banner-inner {
+    padding: 0.5rem 0;
+  }
+  .hero-brand-col {
+    gap: 0.5rem;
+  }
+  .hero-main-title {
+    font-size: 1.1rem;
+  }
+  .dock-container {
+    padding: 0.25rem 0;
+    font-size: 0.8rem;
+  }
+  .dock-proceed-btn {
+    padding: 0.5rem 0.85rem;
+    font-size: 0.85rem;
+  }
+}
+
 /* ============================================================
    RIGHT SUMMARY SIDEBAR (REMOVED / PRESERVED AS FALLBACK)
    ============================================================ */

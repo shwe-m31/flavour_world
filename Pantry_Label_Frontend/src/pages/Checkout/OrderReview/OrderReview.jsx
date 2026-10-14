@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { currencyFormat } from '../../../utils/currencyFormat';
+import { getTranslatedName } from '../../../utils/translationHelper';
 import orderService from '../../../services/orderService';
 import Loader from '../../../components/Loader/Loader';
 import { CustomisationContext } from '../../../context/CustomisationContext';
@@ -59,7 +60,7 @@ export const OrderReview = ({ token, cart, addressId, onBack, onOrderCreated }) 
             <h4 style={{ margin: '0 0 0.75rem 0', fontSize: '0.95rem', color: '#0f172a' }}>Order Specifications</h4>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.5rem', fontSize: '0.82rem' }}>
               <div><strong>Sticker Price:</strong> ₹2.00 / label</div>
-              <div><strong>Capacity:</strong> {sheetQuantity} Containers ({selectedShape === 'square' ? '35/sheet' : '40/sheet'})</div>
+              <div><strong>Capacity:</strong> {sheetQuantity} Containers (35 labels/sheet)</div>
               <div><strong>Shape:</strong> {selectedShape || 'Square'}</div>
               <div><strong>Script:</strong> {(selectedLanguage || 'Tamil').toUpperCase()} + English</div>
               <div><strong>Typography:</strong> {selectedFont || 'Playfair Display'}</div>
@@ -71,17 +72,20 @@ export const OrderReview = ({ token, cart, addressId, onBack, onOrderCreated }) 
         <div className="review-section">
           <h3>Review Selected Stickers ({totalItems})</h3>
           <div className="review-items-list">
-            {cartItems.map((item, idx) => (
-              <div key={item.cartItemId || idx} className="review-item-row">
-                <span className="review-item-name">
-                  {item.product?.name}{' '}
-                  {item.product?.bilingualName && (
-                    <span className="review-item-bilingual">({item.product.bilingualName})</span>
-                  )}
-                </span>
-                <span className="review-item-price">{currencyFormat(item.product?.price || 0)}</span>
-              </div>
-            ))}
+            {cartItems.map((item, idx) => {
+              const translated = getTranslatedName(item.product, selectedLanguage) || (selectedLanguage === 'tamil' ? item.product?.bilingualName : '');
+              return (
+                <div key={item.cartItemId || idx} className="review-item-row">
+                  <span className="review-item-name">
+                    {item.product?.name}{' '}
+                    {translated && translated !== item.product?.name && (
+                      <span className="review-item-bilingual">({translated})</span>
+                    )}
+                  </span>
+                  <span className="review-item-price">{currencyFormat(item.product?.price || 0)}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 

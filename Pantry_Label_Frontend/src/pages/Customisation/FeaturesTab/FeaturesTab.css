@@ -259,7 +259,7 @@
 
 .silhouette-rectangle {
   width: 68px;
-  height: 48px;
+  height: 34px;
 }
 
 .shape-silhouette.corner-rounded {
@@ -645,5 +645,26 @@
 
   .sample-english-specimen {
     font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .features-tab-container {
+    padding: 0.5rem 0.25rem;
+  }
+  .customiser-option-section {
+    padding: 0.75rem 0.4rem;
+  }
+  .theme-palette-grid,
+  .choice-grid-shapes,
+  .choice-grid-corners,
+  .border-choice-grid,
+  .typography-choice-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+  .features-cat-pill {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.72rem;
   }
 }

@@ -15,7 +15,6 @@ export const UsersManagement = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [selectedUserForDetail, setSelectedUserForDetail] = useState(null);
 
-  // Filter options
   const stateOptions = [
     { value: 'all', label: 'All States' },
     ...states.map(s => ({ value: s.name, label: s.name }))

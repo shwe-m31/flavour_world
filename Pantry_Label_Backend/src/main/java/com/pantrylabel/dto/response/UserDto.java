@@ -16,6 +16,8 @@ public class UserDto {
     private String name;
     private String gender;
     private Integer age;
+    private String phone;
+    private String address;
     private String kitchenType;
     private Long stateId;
     private String stateName;

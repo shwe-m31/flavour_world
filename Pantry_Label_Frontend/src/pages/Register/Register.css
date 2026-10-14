@@ -365,8 +365,28 @@
 }
 
 @media (max-width: 480px) {
+  .register-page-container {
+    padding: 0.75rem 0.5rem;
+  }
   .register-card-layout {
-    padding: 1.75rem 1.25rem;
-    border-radius: 18px;
+    padding: 1.5rem 1rem;
+    border-radius: 16px;
+  }
+}
+
+@media (max-width: 300px) {
+  .register-page-container {
+    padding: 0.5rem 0.25rem;
+  }
+  .register-card-layout {
+    padding: 1rem 0.75rem;
+    border-radius: 12px;
+  }
+  .register-logo-img {
+    height: 48px;
+    width: 48px;
+  }
+  .register-card-header h2 {
+    font-size: 1.25rem;
   }
 }

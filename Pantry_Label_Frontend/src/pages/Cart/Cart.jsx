@@ -4,11 +4,14 @@ import { ShoppingCart, Trash2, Tag, ShieldCheck } from 'lucide-react';
 import Header from '../../components/Header/Header';
 import Loader from '../../components/Loader/Loader';
 import { CartContext } from '../../context/CartContext';
+import { CustomisationContext } from '../../context/CustomisationContext';
+import { getTranslatedName } from '../../utils/translationHelper';
 import { currencyFormat } from '../../utils/currencyFormat';
 import './Cart.css';
 
 export const Cart = () => {
   const { cart, cartItems, cartCount, loading, removeFromCart, clearCart, fetchCart } = useContext(CartContext);
+  const { selectedLanguage } = useContext(CustomisationContext) || {};
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -102,9 +105,12 @@ export const Cart = () => {
 
                       <div className="cart-item-details">
                         <h4 className="cart-item-name">{product.name}</h4>
-                        {product.bilingualName && (
-                          <span className="cart-item-bilingual">{product.bilingualName}</span>
-                        )}
+                        {(() => {
+                          const translated = getTranslatedName(product, selectedLanguage) || (selectedLanguage === 'tamil' ? product.bilingualName : '');
+                          return translated && translated !== product.name ? (
+                            <span className="cart-item-bilingual">{translated}</span>
+                          ) : null;
+                        })()}
                       </div>
 
                       <div className="cart-item-price-block">

@@ -47,6 +47,8 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(100),
     gender VARCHAR(20),
     age INT,
+    phone VARCHAR(20),
+    address TEXT,
     kitchen_type VARCHAR(50),
     state_id BIGINT,
     profile_completed BOOLEAN NOT NULL DEFAULT FALSE,

@@ -174,13 +174,14 @@ export const getRecommendedProductIds = (
   const categoryBucketCounts = {};
 
   // First pass: pick highest scoring items while keeping reasonable category spread
+  const maxPerCategory = Math.max(8, Math.ceil(targetCount / 4));
   for (const item of scoredProducts) {
     if (selectedIds.size >= targetCount) break;
     const catId = item.product.categoryId || 0;
     const currentCount = categoryBucketCounts[catId] || 0;
 
-    // Limit any single category to max 8 items in the top 30
-    if (currentCount < 8 || selectedIds.size > 24) {
+    // Limit any single category to prevent domination while allowing diversity
+    if (currentCount < maxPerCategory || selectedIds.size > Math.floor(targetCount * 0.8)) {
       selectedIds.add(item.product.id);
       categoryBucketCounts[catId] = currentCount + 1;
     }

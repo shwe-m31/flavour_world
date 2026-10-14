@@ -32,6 +32,12 @@ public class User {
 
     private Integer age;
 
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "address", columnDefinition = "TEXT")
+    private String address;
+
     @Column(name = "kitchen_type")
     private String kitchenType;
 

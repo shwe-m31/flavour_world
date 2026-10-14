@@ -32,8 +32,11 @@ export const AddressPage = ({ token, onSelectAddress, selectedAddressId }) => {
       ]);
       const loadedAddrs = addrRes.data || [];
       setAddresses(loadedAddrs);
-      setStates(statesRes.data || []);
-      if (loadedAddrs.length === 0) {
+      if (loadedAddrs.length > 0) {
+        if (!selectedAddressId) {
+          onSelectAddress(loadedAddrs[0].id);
+        }
+      } else {
         setShowForm(true);
       }
     } catch (err) {

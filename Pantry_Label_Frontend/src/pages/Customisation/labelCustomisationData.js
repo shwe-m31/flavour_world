@@ -206,15 +206,15 @@ export const STICKER_SHAPES = [
     id: 'square',
     name: 'Square',
     ratio: '1 / 1',
-    aspectLabel: '1:1 Ratio',
-    description: 'Equal width & height — ideal for spice jars, square canisters, and cubical containers'
+    aspectLabel: '1:1 (4×4 cm)',
+    description: '35 labels/sheet (7 cols × 5 rows) • 4cm × 4cm print size on A4 Landscape'
   },
   {
     id: 'rectangle',
     name: 'Rectangle',
-    ratio: '1.4 / 1',
-    aspectLabel: '1.4:1 Wide',
-    description: 'Wider proportion — ideal for pantry bins, storage tubs, and mason jars'
+    ratio: '2 / 1',
+    aspectLabel: '2:1 (5.4×2.7 cm)',
+    description: '35 labels/sheet (5 cols × 7 rows) • 5.4cm × 2.7cm print size on A4 Landscape'
   }
 ];
 

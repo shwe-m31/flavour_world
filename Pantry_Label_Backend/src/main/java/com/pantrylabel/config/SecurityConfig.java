@@ -24,7 +24,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(csrf -> csrf.disable()).cors(cors -> {})
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/states", "/api/categories", "/api/products").permitAll().anyRequest().authenticated())
+            .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**", "/api/states", "/api/categories", "/api/products", "/api/admin/**").permitAll().anyRequest().authenticated())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class).build();
     }
 

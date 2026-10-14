@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import {
   INITIAL_STATES,
   INITIAL_LANGUAGES,
@@ -31,6 +31,95 @@ export const AdminProvider = ({ children }) => {
   const [recommendations, setRecommendations] = useState(INITIAL_RECOMMENDATIONS);
   const [activityLog, setActivityLog] = useState(INITIAL_ACTIVITY_LOG);
   const [settings, setSettings] = useState(INITIAL_SETTINGS);
+
+  // Fetch real database data from backend on mount
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchRealData = async () => {
+      // 1. Fetch Live Users
+      try {
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const usersRes = await fetch('/api/admin/users', { headers });
+        if (usersRes.ok) {
+          const liveUsers = await usersRes.json();
+          if (Array.isArray(liveUsers) && liveUsers.length > 0 && isMounted) {
+            const demoEmails = new Set(INITIAL_USERS.map(u => (u.email || '').toLowerCase().trim()));
+            const formattedLive = liveUsers.map(u => ({
+              ...u,
+              isDemo: false,
+              source: 'Live Customer'
+            }));
+            const newLiveUsers = formattedLive.filter(u => {
+              const email = (u.email || '').toLowerCase().trim();
+              return email && !demoEmails.has(email);
+            });
+            setUsers([...newLiveUsers, ...INITIAL_USERS]);
+          }
+        }
+      } catch (err) {
+        console.warn('Real users API not reachable, using demo users:', err);
+      }
+
+      // 2. Fetch Live Orders
+      try {
+        const ordersRes = await fetch('/api/admin/orders');
+        if (ordersRes.ok) {
+          const liveOrders = await ordersRes.json();
+          if (Array.isArray(liveOrders) && liveOrders.length > 0 && isMounted) {
+            const demoOrderNumbers = new Set(INITIAL_ORDERS.map(o => (o.order_number || o.id || '').toUpperCase().trim()));
+            const formattedOrders = liveOrders.map(o => ({
+              ...o,
+              isDemo: false,
+              source: 'Live Order'
+            }));
+            const newLiveOrders = formattedOrders.filter(o => {
+              const orderNum = (o.order_number || o.id || '').toUpperCase().trim();
+              return orderNum && !demoOrderNumbers.has(orderNum);
+            });
+            setOrders([...newLiveOrders, ...INITIAL_ORDERS]);
+          }
+        }
+      } catch (err) {
+        console.warn('Real orders API not reachable, using demo orders:', err);
+      }
+
+      // 3. Fetch Real Products from database
+      try {
+        const prodRes = await fetch('/api/products');
+        if (prodRes.ok) {
+          const realProducts = await prodRes.json();
+          if (Array.isArray(realProducts) && realProducts.length > 0 && isMounted) {
+            const mapped = realProducts.map(p => ({
+              id: p.id,
+              product_code: p.productCode || `PRD-${String(p.id).padStart(3, '0')}`,
+              name: p.name,
+              english_name: p.englishName || p.name,
+              category: p.categoryName || 'Pantry Staples',
+              category_id: p.categoryId || 1,
+              state: p.stateName || 'All India',
+              price: 2.00,
+              status: 'Active',
+              available_languages: 7,
+              last_updated: 'Current Catalogue',
+              tamil_name: p.tamil || p.tamilName || '',
+              hindi_name: p.hindi || p.hindiName || '',
+              telugu_name: p.telugu || p.teluguName || '',
+              kannada_name: p.kannada || p.kannadaName || '',
+              malayalam_name: p.malayalam || p.malayalamName || ''
+            }));
+            setIngredients(mapped);
+          }
+        }
+      } catch (err) {
+        console.warn('Real products API not reachable, using default ingredients:', err);
+      }
+    };
+
+    fetchRealData();
+    return () => { isMounted = false; };
+  }, []);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [notifications, setNotifications] = useState([
